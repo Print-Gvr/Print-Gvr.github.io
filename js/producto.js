@@ -2,44 +2,20 @@
 
 // Asegúrate de que getProducts() y agregarItem() están disponibles en este archivo
 
-function changeMainImage(newSrc) {
-    const mainImageElement = document.querySelector('#main-product-image img');
-    if (mainImageElement) {
-        // 1. Cambiar la fuente de la imagen grande
-        mainImageElement.src = newSrc;
-        
-        // 2. Opcional: Actualizar el estado "activo" de las miniaturas
-        const thumbnails = document.querySelectorAll('#product-thumbnails img');
-        thumbnails.forEach(thumb => {
-            thumb.classList.remove('border-purple-500', 'border-2');
-            thumb.classList.add('border', 'border-gray-200');
-        });
-        
-        // El elemento que llamó la función (this)
-        const clickedThumbnail = event.currentTarget; 
-        clickedThumbnail.classList.add('border-purple-500', 'border-2');
-        clickedThumbnail.classList.remove('border', 'border-gray-200');
-    }
-}
+
 
 function loadProductDetail() {
-     const urlParams = new URLSearchParams(window.location.search);
+    // 1. Obtener el ID del producto de la URL
+    const urlParams = new URLSearchParams(window.location.search);
     const productId = parseInt(urlParams.get('id')); 
-    
-    // NOTA: Los IDs para los contenedores de la galería ya no se buscan aquí 
-    // porque ya están en el HTML estático.
-    const mainImageContainer = document.getElementById('main-product-image');
-    const thumbnailsContainer = document.getElementById('product-thumbnails');
 
-    // 2. Si no hay ID o no es válido, redirigir o mostrar error
     if (isNaN(productId) || !productId) {
-        // NOTA: Usar custom modal en lugar de alert()
         console.error("Producto no encontrado o ID inválido.");
         window.location.href = 'catalogo.html'; 
         return;
     }
     
-    // 3. Buscar el producto en el inventario de localStorage
+    // 2. Buscar el producto (Asume que getProducts() está disponible globalmente)
     const productList = getProducts(); 
     const product = productList.find(p => p.id === productId);
 
@@ -49,60 +25,70 @@ function loadProductDetail() {
         return;
     }
 
-    // ----------------------------------------------------
-    // 4. GENERACIÓN DE LA GALERÍA DE IMÁGENES (NUEVA LÓGICA)
-    // ----------------------------------------------------
+    // 3. Contenedores
+    const imageContainer = document.getElementById('product-image-container');
+    const infoContainer = document.getElementById('product-info-container');
     
-    // A. Crea una lista de todas las imágenes (Principal + Secundarias)
-    const allImages = [product.image];
-    if (product.secondary_images && Array.isArray(product.secondary_images)) {
-        allImages.push(...product.secondary_images);
-    }
-    
-    // B. Inyectar la Imagen Principal
-    mainImageContainer.innerHTML = `
-        <img 
-            src="${product.image}" 
-            alt="${product.name}" 
-            class="w-full h-auto object-cover"
-        >
+    // 4. Lógica para la Galería de Imágenes
+    const secondaryImages = product.secondary_images || []; 
+    // Unir la imagen principal con todas las imágenes secundarias sin límite
+    const allImages = [product.image, ...secondaryImages];
+
+    // Almacenamos todas las URLs de imagen en un atributo para el JS de navegación
+    imageContainer.setAttribute('data-all-images', JSON.stringify(allImages));
+
+    // Estructura de la galería (Imagen Principal + Miniaturas)
+    imageContainer.innerHTML = `
+        <div id="product-thumbnails" class="flex lg:flex-col space-x-2 lg:space-x-0 lg:space-y-2 order-2 lg:order-1">
+            </div>
+        <div id="main-product-image" class="w-full lg:w-4/5 shadow-xl rounded-lg overflow-hidden order-1 lg:order-2">
+            <img 
+                src="${product.image}" 
+                alt="${product.name}" 
+                class="w-full h-full object-cover rounded-lg"
+                data-current-index="0"
+            >
+        </div>
     `;
 
-    // C. Generar las Miniaturas
+    // 5. Renderizar Miniaturas
+    const thumbnailsContainer = document.getElementById('product-thumbnails');
     let thumbnailsHTML = '';
-    
+
     allImages.forEach((url, index) => {
-        // La primera miniatura estará activa por defecto (clase border-purple-500)
-        const activeClass = index === 0 ? 'border-purple-500 border-2' : 'border border-gray-200';
+        // Marcamos la primera imagen (principal) como activa
+        const isActive = index === 0 ? 'border-purple-500 border-2' : 'border-transparent';
         
-        // Usamos la función changeMainImage con la URL y el evento 'this'
+        // La llamada pasa la URL y el índice para que changeMainImage actualice el estado
         thumbnailsHTML += `
-            <img 
-                src="${url}" 
-                alt="Vista ${index + 1}" 
-                onclick="changeMainImage('${url}', event)"
-                class="w-16 h-16 object-cover rounded-md cursor-pointer transition duration-150 transform hover:scale-105 ${activeClass}"
+            <img src="${url}" 
+                 alt="Vista ${index + 1}"
+                 class="thumbnail w-16 h-16 object-cover rounded-md cursor-pointer hover:border-purple-400 transition ${isActive}"
+                 onclick="changeMainImage('${url}', event, ${index})"
             >
         `;
     });
 
     thumbnailsContainer.innerHTML = thumbnailsHTML;
-    
-    // ----------------------------------------------------
-    // 5. GENERAR INFO DEL PRODUCTO (LÓGICA EXISTENTE)
-    // ----------------------------------------------------
 
-    const infoContainer = document.getElementById('product-info-container');
+
+    // 6. Generar el HTML de INFO
     
-    // Función de JS para el botón (usa el ID y precio del producto actual)
-    const addItemCall = `agregarItem(${product.id}, '${product.name.replace(/'/g, "\\'")}', ${product.price})`;
+    // Limpieza de datos para evitar errores de comillas en el onclick
+    const formattedPrice = formatoMoneda(product.price);
+    const cleanName = product.name.replace(/'/g, "\\'");
+    const imagePath = product.image || ''; 
+    const cleanImage = imagePath.replace(/'/g, "\\'"); 
+
+    // Función de JS para el botón: ID, NOMBRE, PRECIO, IMAGEN
+    const addItemCall = `agregarItem(${product.id}, '${cleanName}', ${product.price}, '${cleanImage}')`;
 
     infoContainer.innerHTML = `
         <h1 class="text-4xl font-extrabold text-gray-900 mb-2">${product.name}</h1>
-        <p class="text-5xl font-bold text-purple-700 mb-6">$${product.price.toFixed(2)}</p>
+        <p class="text-5xl font-bold text-purple-700 mb-6">${formattedPrice} COP</p>
         
-        <h2 class="text-xl font-semibold text-gray-800 mt-4 mb-2">Descripción</h2>
-        <p class="text-gray-600 leading-relaxed">${product.description}</p>
+        <h2 class="text-2xl font-semibold text-gray-800 mt-4 mb-2">Descripción</h2>
+        <p class="text-xl text-gray-600 leading-relaxed">${product.description}</p>
         
         <div class="mt-8 flex items-center gap-4">
             <button 
@@ -115,7 +101,80 @@ function loadProductDetail() {
         </div>
     `;
 
-    renderReviewSection(productId);
+    // Asume que renderReviewSection() está definido y accesible
+    // renderReviewSection(productId); 
+
+    // 🛑 LLAMADA CLAVE: Configurar la navegación por teclado
+    setupKeyboardNavigation(); 
+}
+
+// -------------------------------------------------------------------------
+// FUNCIÓN AUXILIAR PARA CAMBIAR LA IMAGEN PRINCIPAL (usada por clic y teclado)
+// -------------------------------------------------------------------------
+function changeMainImage(newSrc, event, newIndex) {
+    const mainImageElement = document.querySelector('#main-product-image img');
+    if (mainImageElement) {
+        mainImageElement.src = newSrc;
+        // Actualiza el índice actual
+        mainImageElement.setAttribute('data-current-index', newIndex); 
+    }
+
+    // Remover la clase activa de todas las miniaturas
+    document.querySelectorAll('#product-thumbnails img').forEach(img => {
+        img.classList.remove('border-purple-500', 'border-2');
+        img.classList.add('border-transparent');
+    });
+
+    // Añadir la clase activa solo a la miniatura clickeada o seleccionada
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('border-purple-500', 'border-2');
+        event.currentTarget.classList.remove('border-transparent');
+    }
+}
+
+// -------------------------------------------------------------------------
+// FUNCIÓN NUEVA: NAVEGACIÓN POR TECLADO
+// -------------------------------------------------------------------------
+function setupKeyboardNavigation() {
+    // 1. Obtener la lista de URLs y la imagen principal
+    const imageContainer = document.getElementById('product-image-container');
+    const allImages = JSON.parse(imageContainer.getAttribute('data-all-images') || '[]');
+    const mainImageElement = document.querySelector('#main-product-image img');
+
+    if (allImages.length <= 1) return; // No hay navegación si solo hay 1 imagen
+
+    document.addEventListener('keydown', (e) => {
+        // Asegurarse de que no estamos escribiendo en un formulario
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return; 
+
+        if (!mainImageElement) return;
+
+        let currentIndex = parseInt(mainImageElement.getAttribute('data-current-index'));
+        let nextIndex = currentIndex;
+
+        if (e.key === 'ArrowRight') {
+            // Avanzar: Si no es la última imagen, ir a la siguiente, sino volver a la primera (0)
+            nextIndex = (currentIndex < allImages.length - 1) ? currentIndex + 1 : 0;
+            e.preventDefault(); // Evitar desplazamiento de página
+        } else if (e.key === 'ArrowLeft') {
+            // Retroceder: Si no es la primera, ir a la anterior, sino ir a la última
+            nextIndex = (currentIndex > 0) ? currentIndex - 1 : allImages.length - 1;
+            e.preventDefault(); // Evitar desplazamiento de página
+        } else {
+            return; // No es una tecla de flecha relevante
+        }
+
+        // 2. Obtener la nueva URL y la miniatura correspondiente
+        const newSrc = allImages[nextIndex];
+        const newThumbnail = document.querySelectorAll('#product-thumbnails img')[nextIndex];
+        
+        // 3. Aplicar el cambio a través de changeMainImage
+        // Simulamos un evento para que changeMainImage actualice el borde
+        const mockEvent = { currentTarget: newThumbnail };
+
+        changeMainImage(newSrc, mockEvent, nextIndex);
+    });
+    renderReviewSection();
 }
 
 //Comentarios
