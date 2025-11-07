@@ -104,17 +104,31 @@
 <body>
   <div class="h-16"></div>
     <main class="container mx-auto p-8 lg:p-12 min-h-screen">
+    <!-- El contenedor principal se mantiene igual: grid de 2 columnas -->
     <div id="product-detail-container" class="grid lg:grid-cols-2 gap-12 items-start">
-        <div id="product-image-container">
-            </div> 
         
+        <!-- INICIO: Contenedor de Imagenes (Modificado) -->
+        <div id="product-image-container" class="flex flex-col lg:flex-row gap-4"> 
+            
+            <!-- 1. Miniaturas (Columna Izquierda en Desktop) -->
+            <div id="product-thumbnails" class="flex lg:flex-col space-x-2 lg:space-x-0 lg:space-y-2 order-2 lg:order-1">
+                <!-- Las miniaturas se inyectan aquí -->
+            </div>
+            
+            <!-- 2. Imagen Principal (Columna Derecha/Grande) -->
+            <div id="main-product-image" class="w-full lg:w-4/5 shadow-xl rounded-lg overflow-hidden order-1 lg:order-2">
+                <!-- La imagen principal se inyecta aquí -->
+            </div>
+        </div>
+        <!-- FIN: Contenedor de Imagenes -->
+        
+        <!-- Contenedores de Información, Formulario y Reviews (Sin Cambios) -->
         <div id="product-info-container">
-            </div>
+        </div>
         <div id="review-form-container">
-            </div>
+        </div>
         <div id="reviews-list" class="mt-8">
-            </div>      
-
+        </div>     
     </div>
 </main>
 </body>

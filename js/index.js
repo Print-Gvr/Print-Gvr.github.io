@@ -49,10 +49,11 @@ const INVENTARIO_INICIAL = [
         price: 29.99,
         stock: 50,
         description: "Algodón 100% orgánico, color blanco.",
-        image: "../assets/yoshi2.png",
+        image: "../assets/escritorioMadera/1.webp",
         secondary_images: [
-            "../assets/yoshi1.jpeg",
-            "assets/img/camiseta1_detalle_tela.jpg",
+            "../assets/escritorioMadera/2.webp",
+            "../assets/escritorioMadera/3.webp",
+            "../assets/escritorioMadera/4.webp",
         ]
     },
     {
