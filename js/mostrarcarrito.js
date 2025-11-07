@@ -46,7 +46,7 @@ function cargarPagCarrito() {
         <div class="flex items-center justify-between p-4 border-b border-gray-200 hover:bg-gray-50 transition">
             
             <div class="flex items-center space-x-4 flex-grow">
-                <img src="${item.image || 'assets/default.jpg'}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md">
+                <img src="${item.image || '../assets/default.png'}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md">
                 <div>
                     <h3 class="font-semibold text-gray-800">${item.name}</h3>
                     <p class="text-sm text-gray-500">$${item.price.toFixed(2)} c/u</p>

@@ -1,44 +1,44 @@
-  const localStorageSessionKey = 'currentDemoUser';
-  const CART_ANON_KEY = 'carrito_anonimo';
-  const INVENTORY_STORAGE_KEY = 'valleVentas_inventario';
-  const REVIEWS_STORAGE_KEY = 'valleVentas_reviews'; 
+const localStorageSessionKey = 'currentDemoUser';
+const CART_ANON_KEY = 'carrito_anonimo';
+const INVENTORY_STORAGE_KEY = 'valleVentas_inventario';
+const REVIEWS_STORAGE_KEY = 'valleVentas_reviews';
 
 //Login
-    function verificarAutenticacion() {
+function verificarAutenticacion() {
     // 1. Declarar y ASIGNAR el valor de la sesión a una variable local
-    const sessionValue =  localStorage.getItem(localStorageSessionKey); 
-    
+    const sessionValue = localStorage.getItem(localStorageSessionKey);
+
     // 2. Ahora sí podemos usar la variable 'sessionValue' para debugging
     console.log("DEBUG: Clave de Sesión:", localStorageSessionKey);
     console.log("DEBUG: Valor de la Sesión:", sessionValue);
     console.log("DEBUG: Estado de Autenticación (isLoggedIn):", !!sessionValue);
-    
+
     // 3. Devolver el valor booleano
-    return !!sessionValue; 
+    return !!sessionValue;
 }
 
-    function updateAuthUI() {
+function updateAuthUI() {
 
     const isLoggedIn = verificarAutenticacion();
     const profileMenu = document.getElementById('wrapperperfil');
-    const guestButtons = document.getElementById('perfilnoautenticado');  
+    const guestButtons = document.getElementById('perfilnoautenticado');
 
     if (profileMenu && guestButtons) {
-        if (isLoggedIn) { 
-        profileMenu.style.display = 'flex'; 
-        guestButtons.style.display = 'none'; 
-    } else {
-        profileMenu.style.display = 'none'; 
-        guestButtons.style.display = 'flex'; 
+        if (isLoggedIn) {
+            profileMenu.style.display = 'flex';
+            guestButtons.style.display = 'none';
+        } else {
+            profileMenu.style.display = 'none';
+            guestButtons.style.display = 'flex';
+        }
     }
-    }
-    }
+}
 
-    function cerrarSesion() {
+function cerrarSesion() {
     localStorage.removeItem(localStorageSessionKey);
     alert('Has cerrado sesión correctamente. ¡Vuelve pronto!');
-    window.location.href = 'login.html'; 
-    }
+    window.location.href = 'login.html';
+}
 
 //Inventario
 
@@ -49,12 +49,11 @@ const INVENTARIO_INICIAL = [
         price: 29.99,
         stock: 50,
         description: "Algodón 100% orgánico, color blanco.",
-        image: "img/camiseta.jpg",
-        secondary_images: [ 
-        "assets/img/camiseta1_vista_trasera.jpg",
-        "assets/img/camiseta1_detalle_tela.jpg",
-        "assets/img/camiseta1_puesta.jpg"
-    ]
+        image: "../assets/yoshi2.png",
+        secondary_images: [
+            "../assets/yoshi1.jpeg",
+            "assets/img/camiseta1_detalle_tela.jpg",
+        ]
     },
     {
         id: 1002,
@@ -63,11 +62,11 @@ const INVENTARIO_INICIAL = [
         stock: 25,
         description: "Diseño Slim-Fit, talla 30-36.",
         image: "img/pantalon.jpg",
-        secondary_images: [ 
-        "assets/img/camiseta1_vista_trasera.jpg",
-        "assets/img/camiseta1_detalle_tela.jpg",
-        "assets/img/camiseta1_puesta.jpg"
-    ]
+        secondary_images: [
+            "assets/img/camiseta1_vista_trasera.jpg",
+            "assets/img/camiseta1_detalle_tela.jpg",
+            "assets/img/camiseta1_puesta.jpg"
+        ]
     },
     {
         id: 1003,
@@ -76,11 +75,11 @@ const INVENTARIO_INICIAL = [
         stock: 15,
         description: "Modelo deportivo y casual.",
         image: "img/zapatillas.jpg",
-        secondary_images: [ 
-        "assets/img/camiseta1_vista_trasera.jpg",
-        "assets/img/camiseta1_detalle_tela.jpg",
-        "assets/img/camiseta1_puesta.jpg"
-    ]
+        secondary_images: [
+            "assets/img/camiseta1_vista_trasera.jpg",
+            "assets/img/camiseta1_detalle_tela.jpg",
+            "assets/img/camiseta1_puesta.jpg"
+        ]
     },
     {
         id: 103,
@@ -89,10 +88,10 @@ const INVENTARIO_INICIAL = [
         stock: 15,
         description: "Modelo deportivo y casual.",
         image: "img/zapatillas.jpg",
-        secondary_images: [ 
-        "assets/img/camiseta1_vista_trasera.jpg",
-        "assets/img/camiseta1_detalle_tela.jpg",
-        "assets/img/camiseta1_puesta.jpg"
+        secondary_images: [
+            "assets/img/camiseta1_vista_trasera.jpg",
+            "assets/img/camiseta1_detalle_tela.jpg",
+            "assets/img/camiseta1_puesta.jpg"
         ]
     },
     {
@@ -102,10 +101,10 @@ const INVENTARIO_INICIAL = [
         stock: 15,
         description: "Modelo deportivo y casual.",
         image: "img/zapatillas.jpg",
-        secondary_images: [ 
-        "assets/img/camiseta1_vista_trasera.jpg",
-        "assets/img/camiseta1_detalle_tela.jpg",
-        "assets/img/camiseta1_puesta.jpg"
+        secondary_images: [
+            "assets/img/camiseta1_vista_trasera.jpg",
+            "assets/img/camiseta1_detalle_tela.jpg",
+            "assets/img/camiseta1_puesta.jpg"
         ]
     }
 ];
@@ -113,10 +112,10 @@ const INVENTARIO_INICIAL = [
 
 function initializeInventory() {
     const storedInventory = localStorage.getItem(INVENTORY_STORAGE_KEY);
-    
+
     if (!storedInventory) {
         console.log("Inicializando inventario por primera vez...");
-        
+
         const inventoryJson = JSON.stringify(INVENTARIO_INICIAL);
         localStorage.setItem(INVENTORY_STORAGE_KEY, inventoryJson);
     } else {
@@ -126,40 +125,40 @@ function initializeInventory() {
 
 function getProducts() {
     const inventoryJson = localStorage.getItem(INVENTORY_STORAGE_KEY);
-    
+
     if (inventoryJson) {
         return JSON.parse(inventoryJson);
     }
-    
-    return INVENTARIO_INICIAL; 
+
+    return INVENTARIO_INICIAL;
 }
-    function renderProducts() {
+function renderProducts() {
     const productList = getProducts(); // Obtiene la lista de productos del inventario
-    const container = document.getElementById('products-container'); 
+    const container = document.getElementById('products-container');
 
     if (!container) {
         console.log("No se encontró el contenedor de productos. Saltando renderizado.");
-        return; 
+        return;
     }
-    
+
     // Verifica si el contenedor existe
     if (!container) {
         console.error("El contenedor 'products-container' no fue encontrado.");
-        return; 
+        return;
     }
 
     let html = '';
-    
+
     productList.forEach(product => {
         // Preparación de variables
         const isSoldOut = product.stock === 0;
         const buttonText = isSoldOut ? 'Agotado' : 'Agregar al carrito';
         const buttonDisabled = isSoldOut ? 'disabled' : '';
-        
+
         // Función de JS que se ejecuta al hacer clic
         // Importante: Escapar comillas en el nombre del producto
-        const addItemCall = `agregarItem(${product.id}, '${product.name.replace(/'/g, "\\'")}', ${product.price})`;
-
+       
+ const addItemCall = `agregarItem(${product.id}, '${product.name.replace(/'/g, "\\'")}', ${product.price}, '${product.image}')`;
 
         // --- INICIO DEL TEMPLATE LITERAL (TU NUEVO ESTILO TAILWIND) ---
         html += `
@@ -202,42 +201,42 @@ function getProducts() {
                 </a>
             </div>
         `;
-        
+
     });
     container.innerHTML = html;
 }
 
 //Carga y guardado del carrito
 
-    function getCartKey() {
+function getCartKey() {
     const userEmail = localStorage.getItem(localStorageSessionKey);
-    
+
     if (userEmail) {
         return `carrito_usuario_${userEmail}`;
     } else {
         return CART_ANON_KEY;
     }
-    }
+}
 
-    function cargarCarrito() {
+function cargarCarrito() {
     const key = getCartKey();
     const itemsJson = localStorage.getItem(key);
     return itemsJson ? JSON.parse(itemsJson) : [];
-    }
+}
 
-    function guardarCarrito(items) {
+function guardarCarrito(items) {
     const key = getCartKey();
     localStorage.setItem(key, JSON.stringify(items));
-    }
+}
 
 
 //Funciones del carrito
 
-    function agregarItem(productId, name, price) {
+function agregarItem(productId, name, price, image) {
     let carrito = cargarCarrito();
-    
-    const itemExistente = carrito.find(item => item.id === productId);
-    
+
+    const itemExistente = carrito.find(item => item.id === productId)
+
     if (itemExistente) {
         itemExistente.quantity += 1;
     } else {
@@ -245,38 +244,40 @@ function getProducts() {
             id: productId,
             name: name,
             price: price,
-            quantity: 1, 
+            quantity: 1,
+            image: image,
         };
+        console.log(image);
         carrito.push(nuevoItem);
     }
-    guardarCarrito(carrito);   
+    guardarCarrito(carrito);
     console.log("Producto agregado/actualizado. Carrito actual:", carrito);
-    }
+}
 
 
-    function eliminarItem(productId) {
-    const idBorrar = parseInt(productId);    
+function eliminarItem(productId) {
+    const idBorrar = parseInt(productId);
     let carrito = cargarCarrito();
 
-    carrito = carrito.filter(item => item.id !== idBorrar);    
-    guardarCarrito(carrito);    
+    carrito = carrito.filter(item => item.id !== idBorrar);
+    guardarCarrito(carrito);
     console.log("Producto eliminado. Carrito actual:", carrito);
 
     if (window.location.pathname.includes('carrito.html')) {
-        location.reload(); 
+        location.reload();
     }
-    }
+}
 
-    function modificarCantidad(itemId, newQuantity) {
+function modificarCantidad(itemId, newQuantity) {
     let items = cargarCarrito();
     const quantity = parseInt(newQuantity);
-    
+
     // Obtener el inventario para validar el stock
-    const inventory = getProducts(); 
+    const inventory = getProducts();
     const product = inventory.find(p => p.id == itemId);
 
     if (!product) return; // Si el producto no existe en el inventario, sal
-    
+
     // 🛑 VALIDACIÓN CRÍTICA: Limitar la cantidad al stock disponible
     if (quantity > product.stock) {
         alert(`Solo quedan ${product.stock} unidades en stock, elije una cantidad valida.`);
@@ -293,23 +294,23 @@ function getProducts() {
 
     if (itemIndex !== -1) {
         // Asegúrate de que no se haya excedido el stock si no salimos antes
-        items[itemIndex].quantity = Math.min(quantity, product.stock); 
+        items[itemIndex].quantity = Math.min(quantity, product.stock);
         guardarCarrito(items);
-        
+
         if (window.location.pathname.includes('carrito.html')) {
-             location.reload(); 
+            location.reload();
         }
     }
-    }
+}
 
-    function vaciarCarrito() {
+function vaciarCarrito() {
     guardarCarrito([]);
     console.log("Carrito vaciado.");
 
     if (window.location.pathname.includes('carrito.html')) {
-             location.reload(); 
-        }
+        location.reload();
     }
+}
 
 //Reseñas
 
@@ -325,11 +326,11 @@ function saveReviews(reviews) {
 // --- Función para Guardar una Nueva Reseña ---
 function submitReview(productId, rating, comment) {
     const currentUserEmail = localStorage.getItem(localStorageSessionKey);
-    
+
     // 🛑 Bloqueo si el usuario no está logeado
     if (!currentUserEmail) {
         alert("Debes iniciar sesión para publicar una reseña.");
-        return; 
+        return;
     }
 
     if (!comment || rating < 1 || rating > 5) {
@@ -349,8 +350,8 @@ function submitReview(productId, rating, comment) {
     allReviews.push(newReview);
     saveReviews(allReviews);
 
-    renderProductReviews(productId); 
-    
+    renderProductReviews(productId);
+
     document.getElementById('review-form').reset();
     alert("¡Reseña publicada con éxito!");
 }
@@ -360,9 +361,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeInventory();
     renderProducts();
     const logoutHeaderBtn = document.getElementById('logout');
-    
+
     if (logoutHeaderBtn) {
         logoutHeaderBtn.addEventListener('click', cerrarSesion);
-    } 
+    }
 });
 

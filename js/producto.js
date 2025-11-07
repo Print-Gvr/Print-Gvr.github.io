@@ -2,15 +2,40 @@
 
 // Asegúrate de que getProducts() y agregarItem() están disponibles en este archivo
 
+function changeMainImage(newSrc) {
+    const mainImageElement = document.querySelector('#main-product-image img');
+    if (mainImageElement) {
+        // 1. Cambiar la fuente de la imagen grande
+        mainImageElement.src = newSrc;
+        
+        // 2. Opcional: Actualizar el estado "activo" de las miniaturas
+        const thumbnails = document.querySelectorAll('#product-thumbnails img');
+        thumbnails.forEach(thumb => {
+            thumb.classList.remove('border-purple-500', 'border-2');
+            thumb.classList.add('border', 'border-gray-200');
+        });
+        
+        // El elemento que llamó la función (this)
+        const clickedThumbnail = event.currentTarget; 
+        clickedThumbnail.classList.add('border-purple-500', 'border-2');
+        clickedThumbnail.classList.remove('border', 'border-gray-200');
+    }
+}
+
 function loadProductDetail() {
-    // 1. Obtener el ID del producto de la URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = parseInt(urlParams.get('id')); // Convertir a número
+     const urlParams = new URLSearchParams(window.location.search);
+    const productId = parseInt(urlParams.get('id')); 
+    
+    // NOTA: Los IDs para los contenedores de la galería ya no se buscan aquí 
+    // porque ya están en el HTML estático.
+    const mainImageContainer = document.getElementById('main-product-image');
+    const thumbnailsContainer = document.getElementById('product-thumbnails');
 
     // 2. Si no hay ID o no es válido, redirigir o mostrar error
     if (isNaN(productId) || !productId) {
-        alert("Producto no encontrado o ID inválido.");
-        window.location.href = 'catalogo.html'; // Redirigir al catálogo
+        // NOTA: Usar custom modal en lugar de alert()
+        console.error("Producto no encontrado o ID inválido.");
+        window.location.href = 'catalogo.html'; 
         return;
     }
     
@@ -19,20 +44,54 @@ function loadProductDetail() {
     const product = productList.find(p => p.id === productId);
 
     if (!product) {
-        alert("Producto no encontrado en el inventario.");
+        console.error("Producto no encontrado en el inventario.");
         window.location.href = 'catalogo.html'; 
         return;
     }
 
-    // 4. Generar el HTML para los contenedores
-
-    // Contenedor de IMAGEN
-    const imageContainer = document.getElementById('product-image-container');
-    imageContainer.innerHTML = `
-        <img src="${product.image}" alt="${product.name}" class="w-full h-auto object-cover rounded-lg shadow-xl">
-    `;
+    // ----------------------------------------------------
+    // 4. GENERACIÓN DE LA GALERÍA DE IMÁGENES (NUEVA LÓGICA)
+    // ----------------------------------------------------
     
-    // Contenedor de INFO
+    // A. Crea una lista de todas las imágenes (Principal + Secundarias)
+    const allImages = [product.image];
+    if (product.secondary_images && Array.isArray(product.secondary_images)) {
+        allImages.push(...product.secondary_images);
+    }
+    
+    // B. Inyectar la Imagen Principal
+    mainImageContainer.innerHTML = `
+        <img 
+            src="${product.image}" 
+            alt="${product.name}" 
+            class="w-full h-auto object-cover"
+        >
+    `;
+
+    // C. Generar las Miniaturas
+    let thumbnailsHTML = '';
+    
+    allImages.forEach((url, index) => {
+        // La primera miniatura estará activa por defecto (clase border-purple-500)
+        const activeClass = index === 0 ? 'border-purple-500 border-2' : 'border border-gray-200';
+        
+        // Usamos la función changeMainImage con la URL y el evento 'this'
+        thumbnailsHTML += `
+            <img 
+                src="${url}" 
+                alt="Vista ${index + 1}" 
+                onclick="changeMainImage('${url}', event)"
+                class="w-16 h-16 object-cover rounded-md cursor-pointer transition duration-150 transform hover:scale-105 ${activeClass}"
+            >
+        `;
+    });
+
+    thumbnailsContainer.innerHTML = thumbnailsHTML;
+    
+    // ----------------------------------------------------
+    // 5. GENERAR INFO DEL PRODUCTO (LÓGICA EXISTENTE)
+    // ----------------------------------------------------
+
     const infoContainer = document.getElementById('product-info-container');
     
     // Función de JS para el botón (usa el ID y precio del producto actual)
