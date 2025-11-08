@@ -1,4 +1,5 @@
 // --- CONSTANTES ---
+const localStorageSessionKey = 'currentDemoUser'; //Identificar
 const localStorageKey = 'demoUsers'; // Llave para almacenar los usuarios
 const authMessage = document.getElementById('auth-message'); // Contenedor para mensajes (éxito/error)
 const registerForm = document.getElementById('register-form'); // El formulario de registro
@@ -30,13 +31,36 @@ function saveUsers(users) {
 registerForm.addEventListener('submit', function(e) {
     e.preventDefault();
     
+    const name = document.getElementById('register-name').value.trim();
+    const lastname = document.getElementById('register-lastname').value.trim();
+    const adress = document.getElementById('register-adress').value.trim();
+    const phone = document.getElementById('register-phone').value.trim();
     const email = document.getElementById('register-email').value.trim();
-    const password = document.getElementById('register-password').value.trim();
+    const password = document.getElementById('register-password').value.trim(); 
+    
 
-    if (!email || !password) {
+    if (!name || !lastname || !adress || !phone || !email || !password) {
         showMessage('Por favor, rellena todos los campos.', true);
         return;
     }
+
+    if (/\d/.test(name) || /\d/.test(lastname)) {
+        showMessage('El Nombre y Apellido no pueden contener números.', true);
+        return;
+    }
+
+    if (!/^\d{10}$/.test(phone)) {
+        showMessage('El teléfono debe contener exactamente 10 dígitos numéricos.', true);
+        return;
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    
+    if (!passwordRegex.test(password)) {
+        showMessage('Error: La contraseña debe tener al menos 8 caracteres e incluir una mayúscula, una minúscula, un número y un símbolo (!@#$%^&*).', true);
+        return;
+    }
+
 
     let users = getUsers();
 
@@ -47,7 +71,7 @@ registerForm.addEventListener('submit', function(e) {
     }
 
     // Guarda el nuevo usuario (DEMO INSEGURA)
-    const newUser = { email, password }; 
+    const newUser = { name,lastname,adress,phone,email, password }; 
     users.push(newUser);
     saveUsers(users);
 

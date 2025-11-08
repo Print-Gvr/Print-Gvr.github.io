@@ -108,11 +108,29 @@
             <div id="login-register-view">
                 <form id="register-form" class="space-y-4">
                     <h2 class="text-2xl font-semibold mb-2 h-8">Registro</h2> 
-                    
+
+                    <div id="auth-message" class="mt-4 p-3 hidden rounded-lg text-sm font-medium"></div>
+                    Nombre
+                    <div class="h-15">
+                        <input type="name" id="register-name" required placeholder="Nombre" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                    </div>
+                    Apellido
+                    <div class="h-15">
+                        <input type="lastname" id="register-lastname" required placeholder="Apellido" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                    </div>
+                    Dirección
+                    <div class="h-15">
+                        <input type="adress" id="register-adress" required placeholder="Dirección" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                    </div>
+                    Celular  
+                    <div class="h-15">
+                        <input type="phone" id="register-phone" required placeholder="Número de teléfono" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                    </div>
+                    Email
                     <div class="h-15">
                         <input type="email" id="register-email" required placeholder="Email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
                     </div>
-                    
+                    Contraseña
                     <div class="h-15">
                         <input type="password" id="register-password" required placeholder="Contraseña" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
                     </div>
@@ -125,12 +143,11 @@
                         ¿Ya tienes cuenta? 
                         <a href="login.html" id="show-login" class="text-indigo-600 hover:text-indigo-800 font-medium">Inicia Sesión</a>
                     </p>
-                </form>
-                
-                <div id="auth-message" class="mt-4 p-3 hidden rounded-lg text-sm font-medium"></div>
+                </form>          
             </div>
         </div>
     </main>
+    </body>
 
 <footer class="w-screen bg-purple-900 text-gray-300" >
   <div class="container mx-auto py-14 px-6">
@@ -213,5 +230,5 @@
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
 <script src="../js/registro.js"></script>
-</body>
+
 </html>

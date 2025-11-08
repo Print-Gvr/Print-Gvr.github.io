@@ -37,7 +37,7 @@ function updateAuthUI() {
 function cerrarSesion() {
     localStorage.removeItem(localStorageSessionKey);
     alert('Has cerrado sesión correctamente. ¡Vuelve pronto!');
-    window.location.href = 'login.html';
+    window.location.href = '../index.html';
 }
 
 //Inventario
