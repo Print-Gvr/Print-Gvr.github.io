@@ -18,7 +18,7 @@
         <!-- Mobile menu button-->
         <button type="button" command="--toggle" commandfor="mobile-menu" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-white/5 hover:text-white focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500">
           <span class="absolute -inset-0.5"></span>
-          <span class="sr-only">Open main menu</span>
+          <span class="sr-only">Abrir menú</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
             <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
@@ -36,7 +36,6 @@
             <!-- Current: "bg-gray-950/50 text-white", Default: "text-gray-300 hover:bg-white/5 hover:text-white" -->
             <a href="index.html" aria-current="page" class="rounded-md bg-gray-950/50 px-3 py-2 text-sm font-medium text-white">Inicio</a>
             <a href="catalogo.html" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Catálogo</a>
-            <a href="nosotros.html" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Sobre nosotros</a>
             <a href="faq.html" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Preguntas frecuentes</a>
           </div>
         </div>
@@ -60,12 +59,12 @@
             <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" class="size-8 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10" />
           </button>
 
-          <el-menu anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-gray-800 py-1 outline -outline-offset-1 outline-white/10 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
-            <a href="perfil.html" class=" text-center block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:outline-hidden">Perfil</a>
+          <el-menu anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-gray-300 py-1 outline -outline-offset-1 outline-gray-300 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+            <a href="perfil.html" class=" text-center block px-4 py-2 text-sm text-gray-800 hover:bg-gray-500 focus:bg-gray-500 focus:outline-hidden">Perfil</a>
             <button 
             id="logout" 
             type="button" 
-            class="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/5 focus:bg-white/5 focus:outline-hidden"
+            class="block w-full text-center px-4 py-2 text-sm text-gray-800 hover:bg-white/5 focus:bg-white focus:outline-hidden"
             >
     Cerrar sesión
 </button>
@@ -90,11 +89,14 @@
       <!-- Current: "bg-gray-950/50 text-white", Default: "text-gray-300 hover:bg-white/5 hover:text-white" -->
       <a href="index.html" aria-current="page" class="block rounded-md bg-gray-950/50 px-3 py-2 text-base font-medium text-white">Inicio</a>
       <a href="catalogo.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Catálogo</a>
-      <a href="nosotros.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Sobre nosotros</a>
       <a href="faq.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Preguntas frecuentes</a>
     </div>
   </el-disclosure>
 </nav>
+
+
+
+
 </header>
 
 <body>

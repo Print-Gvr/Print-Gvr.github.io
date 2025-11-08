@@ -31,12 +31,15 @@ function cargarPagCarrito() {
 
     // --- Lógica para Renderizar Items ---
     let cartHTML = '';
-
+    
     
 
     cartItems.forEach(item => {
+        const formattedPrice = formatoMoneda(item.price);
         const subtotal = item.price * item.quantity;
+        const sumaFormato = formatoMoneda(subtotal)
         cartTotal += subtotal;
+        
         
         // La función removerItem(itemId) debe existir en funciones_base.js
         const deleteCall = `eliminarItem('${item.id}')`; 
@@ -49,7 +52,7 @@ function cargarPagCarrito() {
                 <img src="${item.image || '../assets/default.png'}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md">
                 <div>
                     <h3 class="font-semibold text-gray-800">${item.name}</h3>
-                    <p class="text-sm text-gray-500">$${item.price.toFixed(2)} c/u</p>
+                    <p class="text-sm text-gray-500">${formattedPrice} c/u</p>
                 </div>
             </div>
 
@@ -64,7 +67,7 @@ function cargarPagCarrito() {
                     style="width: 35px;"
                     />
                 
-                <span class="font-bold text-lg text-purple-700 w-20 text-right">$${subtotal.toFixed(2)}</span>
+                <span class="font-bold text-lg text-purple-700 w-20 text-right">${sumaFormato}</span>
             </div>
             
             <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition">
@@ -82,9 +85,9 @@ function cargarPagCarrito() {
     </div>
     `;
     });
-
+    const totalFormato = formatoMoneda(cartTotal);
     cartContainer.innerHTML = cartHTML;
-    totalElement.textContent = `$${cartTotal.toFixed(2)}`;
+    totalElement.textContent = `${totalFormato}`;
 }
 
 // --- Llamada al Cargar la Página ---
