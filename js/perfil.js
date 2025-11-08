@@ -1,10 +1,3 @@
-function formatCurrency(amount) {
-    return new Intl.NumberFormat('es-CO', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-    }).format(amount);
-}
 
 // --- DATOS SIMULADOS ---
 const userPurchases = [
@@ -19,14 +12,14 @@ function openTab(tabName) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tab-button').forEach(el => {
         el.classList.remove('bg-primary', 'text-white', 'shadow-md');
-        el.classList.add('text-gray-600', 'hover:bg-gray-200');
+        el.classList.add('text-gray-100', 'hover:bg-gray-200');
     });
 
     // Activar contenido y botón seleccionado
     document.getElementById(`content-${tabName}`).classList.add('active');
     const tabButton = document.getElementById(`tab-${tabName}`);
-    tabButton.classList.add('bg-primary', 'shadow-md');
-    tabButton.classList.remove('text-gray-800', 'hover:bg-gray-400');
+    tabButton.classList.add('bg-primary','shadow-md');
+    tabButton.classList.remove('hover:bg-gray-400');
     
     // Si la pestaña de historial se abre, renderizar las compras
     if (tabName === 'history') {
@@ -70,7 +63,7 @@ function renderPurchaseHistory() {
                 <div class="text-gray-600 text-sm space-y-1">
                     <p><strong>Fecha:</strong> ${purchase.date}</p>
                     <p><strong>Artículos:</strong> ${purchase.items}</p>
-                    <p class="text-lg font-bold text-gray-900">Total: ${formatCurrency(purchase.total)}</p>
+                    <p class="text-lg font-bold text-gray-900">Total: ${formatoMoneda(purchase.total)}</p>
                 </div>
                 <button class="mt-3 text-primary text-sm font-medium hover:text-secondary transition">
                     Ver Detalles
