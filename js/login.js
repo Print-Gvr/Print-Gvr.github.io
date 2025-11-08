@@ -38,7 +38,7 @@ loginForm.addEventListener('submit', function(e) {
         
         // Redirección exitosa: ve a la página principal
         setTimeout(() => {
-            window.location.href = 'index.html'; 
+            window.location.href = '../index.html'; 
         }, 2000);
     } else {
         showMessage('Email o contraseña incorrectos.', true);
