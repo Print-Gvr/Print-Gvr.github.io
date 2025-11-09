@@ -2,144 +2,318 @@
 <html lang="es">
 
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link href="../dist/output.css" rel="stylesheet">
-<title>ValleVentas | Catálogo</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="../dist/output.css" rel="stylesheet">
+  <title>ValleVentas | Catálogo</title>
+  <style>
+    /* Definición de colores para el tema (Purple/Morado) */
+    :root {
+      --color-primary: 90, 35, 134;
+      /* purple-900 (oscuro) */
+      --color-secondary: 139, 92, 246;
+      /* purple-600 (más brillante) */
+      --color-accent: 59, 130, 246;
+      /* blue-500 para el foco de input y tags activos */
+    }
+
+    .bg-primary {
+      background-color: rgb(var(--color-primary));
+    }
+
+    .hover\:bg-secondary:hover {
+      background-color: rgb(var(--color-secondary));
+    }
+
+    .text-primary {
+      color: rgb(var(--color-primary));
+    }
+
+    .focus\:ring-accent {
+      --tw-ring-color: rgb(var(--color-accent));
+    }
+
+    .focus\:border-accent {
+      border-color: rgb(var(--color-accent));
+    }
+
+    .border-accent {
+      border-color: rgb(var(--color-accent));
+    }
+
+    /* Estilo para los tags seleccionados */
+    .tag-active {
+      background-color: rgb(var(--color-accent));
+      color: white;
+      border-color: rgb(var(--color-accent));
+    }
+
+    /* Reglas de fallback para imágenes no cargadas */
+    .product-image-container img {
+      display: block;
+    }
+
+    .product-image-container .fallback-icon {
+      display: none;
+    }
+
+    .product-image-container img:not([src]) {
+      display: none;
+    }
+
+    /* Si la imagen no carga, muestra el fallback icon */
+    .product-image-container img[onerror]:not([src])+.fallback-icon,
+    .product-image-container img[onerror][style*="display: none"]+.fallback-icon {
+      display: flex;
+    }
+  
+        /* Importante: Asegurarse de que no hay reglas externas anulando el grid */
+        .grid-product-layout {
+            display: grid;
+            grid-template-columns: repeat(1, minmax(0, 1fr)); /* Default Mobile */
+            gap: 1.5rem; /* gap-6 */
+        }
+        @media (min-width: 1024px) {
+            .filter-column {
+                width: 300px; /* Ancho fijo para la columna de filtros en desktop */
+                flex-shrink: 0; 
+            }
+            .products-column {
+                flex-grow: 1; 
+            }
+        }
+
+        /*
+        * REGLAS CRÍTICAS PARA EL GRID DE PRODUCTOS (Masonry fix)
+        */
+        .grid-product-layout {
+            display: grid;
+            grid-template-columns: repeat(1, minmax(0, 1fr)); /* Default Mobile */
+            gap: 1.5rem; /* gap-6 */
+        }
+        
+        /* Asegura que los enlaces hijos ocupen el 100% de la altura de la celda */
+        .grid-product-layout > a {
+            height: 100%; 
+            display: flex; 
+            flex-direction: column;
+        }
+
+        /* Responsive Columns */
+        @media (min-width: 640px) {
+            .grid-product-layout {
+                grid-template-columns: repeat(2, minmax(0, 1fr)); 
+            }
+        }
+        @media (min-width: 1024px) {
+            .grid-product-layout {
+                grid-template-columns: repeat(3, minmax(0, 1fr)); 
+            }
+        }
+        @media (min-width: 1280px) {
+            .grid-product-layout {
+                grid-template-columns: repeat(4, minmax(0, 1fr)); 
+            }
+        }
+    </style>
+
+  <script type="module" src="../js/catalogo.js"></script>
 </head>
 
 
-<header>   
-    <nav class="bg-purple-900 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-white/10 fixed top-0 inset-x-0 shadow-md z-10">
-  <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-    <div class="relative flex h-16 items-center justify-between">
-      <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
-        <!-- Mobile menu button-->
-        <button type="button" command="--toggle" commandfor="mobile-menu" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-white/5 hover:text-white focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500">
-          <span class="absolute -inset-0.5"></span>
-          <span class="sr-only">Abrir menú</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
-            <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
-            <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </button>
-      </div>
-      <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-        <div class="flex shrink-0 items-center">
-          <a href="../index.html">
-          <img src="../assets/Logo.png" alt="ValleVentas" class="h-10 w-auto"/>
-          </a>
+<header>
+  <nav
+    class="bg-purple-900 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-white/10 fixed top-0 inset-x-0 shadow-md z-10">
+    <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+      <div class="relative flex h-16 items-center justify-between">
+        <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+          <!-- Mobile menu button-->
+          <button type="button" command="--toggle" commandfor="mobile-menu"
+            class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-white/5 hover:text-white focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500">
+            <span class="absolute -inset-0.5"></span>
+            <span class="sr-only">Abrir menú</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon"
+              aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+              <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon"
+              aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
+              <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
         </div>
-        <div class="hidden sm:ml-6 sm:block">
-          <div class="flex space-x-4">
-            <!-- Current: "bg-gray-950/50 text-white", Default: "text-gray-300 hover:bg-white/5 hover:text-white" -->
-            <a href="../index.html" aria-current="page" class="rounded-md bg-gray-950/50 px-3 py-2 text-sm font-medium text-white">Inicio</a>
-            <a href="catalogo.html" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Catálogo</a>
-            <a href="faq.html" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Preguntas frecuentes</a>
+        <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+          <div class="flex shrink-0 items-center">
+            <a href="../index.html">
+              <img src="../assets/Logo.png" alt="ValleVentas" class="h-10 w-auto" />
+            </a>
+          </div>
+          <div class="hidden sm:ml-6 sm:block">
+            <div class="flex space-x-4">
+              <!-- Current: "bg-gray-950/50 text-white", Default: "text-gray-300 hover:bg-white/5 hover:text-white" -->
+              <a href="../index.html" aria-current="page"
+                class="rounded-md bg-gray-950/50 px-3 py-2 text-sm font-medium text-white">Inicio</a>
+              <a href="catalogo.html"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Catálogo</a>
+              <a href="faq.html"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Preguntas
+                frecuentes</a>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-        <a href="carrito.html" class="relative rounded-full p-1 text-white hover:text-white focus:outline-2 focus:outline-offset-2">
-          <span class="absolute -inset-1.5"></span>
-          <span class="sr-only">Carrito</span>
-          <svg width=28 height = 28>
-            <use xlink:href="../assets/sprites.svg#logo"></use>
-          </svg>
-        </a>
+        <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+          <a href="carrito.html"
+            class="relative rounded-full p-1 text-white hover:text-white focus:outline-2 focus:outline-offset-2">
+            <span class="absolute -inset-1.5"></span>
+            <span class="sr-only">Carrito</span>
+            <svg width=28 height=28>
+              <use xlink:href="../assets/sprites.svg#logo"></use>
+            </svg>
+          </a>
         </div>
         <!-- Menu perfil -->
         <div id="wrapperperfil" style="display: none;">
-        <div id="perfil-autenticado" class="flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"> 
-        <el-dropdown class="relative ml-3">
-          <button class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-            <span class="absolute -inset-1.5"></span>
-            <span class="sr-only">Menú de usuario</span>
-            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" class="size-8 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10" />
-          </button>
+          <div id="perfil-autenticado"
+            class="flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+            <el-dropdown class="relative ml-3">
+              <button
+                class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                <span class="absolute -inset-1.5"></span>
+                <span class="sr-only">Menú de usuario</span>
+                <img
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  alt="" class="size-8 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10" />
+              </button>
 
-          <el-menu anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-gray-300 py-1 outline -outline-offset-1 outline-gray-300 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
-            <a href="perfil.html" class=" text-center block px-4 py-2 text-sm text-gray-800 hover:bg-gray-500 focus:bg-gray-500 focus:outline-hidden">Perfil</a>
-            <button 
-            id="logout" 
-            type="button" 
-            class="block w-full text-center px-4 py-2 text-sm text-gray-800 hover:bg-white/5 focus:bg-white focus:outline-hidden"
-            >
-    Cerrar sesión
-</button>
-          </el-menu>
-        </el-dropdown>
-      </div>
-      </div>
+              <el-menu anchor="bottom end" popover
+                class="w-48 origin-top-right rounded-md bg-gray-300 py-1 outline -outline-offset-1 outline-gray-300 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+                <a href="perfil.html"
+                  class=" text-center block px-4 py-2 text-sm text-gray-800 hover:bg-gray-500 focus:bg-gray-500 focus:outline-hidden">Perfil</a>
+                <button id="logout" type="button"
+                  class="block w-full text-center px-4 py-2 text-sm text-gray-800 hover:bg-white/5 focus:bg-white focus:outline-hidden">
+                  Cerrar sesión
+                </button>
+              </el-menu>
+            </el-dropdown>
+          </div>
+        </div>
 
-      <div id="perfilnoautenticado"  class="ml-3 space-x-2"> 
-        <a href="login.html" class="px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 rounded-md">
+        <div id="perfilnoautenticado" class="ml-3 space-x-2">
+          <a href="login.html" class="px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 rounded-md">
             Iniciar Sesión
-        </a>
-        <a href="registro.html" class="px-3 py-2 text-sm font-medium text-white bg-blue-400 hover:bg-indigo-700 rounded-md shadow-md">
+          </a>
+          <a href="registro.html"
+            class="px-3 py-2 text-sm font-medium text-white bg-blue-400 hover:bg-indigo-700 rounded-md shadow-md">
             Registrarse
-        </a>
+          </a>
+        </div>
+      </div>
     </div>
-    </div>
-  </div>
 
-  <el-disclosure id="mobile-menu" hidden class="block sm:hidden">
-    <div class="space-y-1 px-2 pt-2 pb-3">
-      <!-- Current: "bg-gray-950/50 text-white", Default: "text-gray-300 hover:bg-white/5 hover:text-white" -->
-      <a href="index.html" aria-current="page" class="block rounded-md bg-gray-950/50 px-3 py-2 text-base font-medium text-white">Inicio</a>
-      <a href="catalogo.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Catálogo</a>
-      <a href="faq.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Preguntas frecuentes</a>
-    </div>
-  </el-disclosure>
-</nav>
-<div class="h-16"></div>
+    <el-disclosure id="mobile-menu" hidden class="block sm:hidden">
+      <div class="space-y-1 px-2 pt-2 pb-3">
+        <!-- Current: "bg-gray-950/50 text-white", Default: "text-gray-300 hover:bg-white/5 hover:text-white" -->
+        <a href="index.html" aria-current="page"
+          class="block rounded-md bg-gray-950/50 px-3 py-2 text-base font-medium text-white">Inicio</a>
+        <a href="catalogo.html"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Catálogo</a>
+        <a href="faq.html"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Preguntas
+          frecuentes</a>
+      </div>
+    </el-disclosure>
+  </nav>
+  <div class="h-16"></div>
 </header>
 
 
- <body>
-  <div class="h-16"></div> 
-  <main class="p-8 w-full">
-<div id="products-container" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8 p-4 lg:p-8">
-</div>
-</main>
-</body>
-  
 
-<footer class="bg-purple-900 text-gray-300" >
+<body class="bg-dark-bg font-sans">
+
+    <!-- Encabezado/Navbar -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-center">
+            <h1 class="text-4xl font-bold text-primary">Catálogo de Productos Ergonómicos</h1>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 sm:p-8">
+
+        <!-- Contenedor Principal de Filtros y Productos -->
+        <!-- Usamos flex-col/lg:flex-row para la estructura vertical en móvil y horizontal en desktop -->
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- Columna de Filtros (IZQUIERDA) -->
+            <!-- APLICAMOS LA CLASE PERSONALIZADA 'filter-column' AQUÍ -->
+            <div class="w-full bg-white p-6 rounded-xl shadow-lg h-fit lg:sticky lg:top-8 order-2 lg:order-1 filter-column">
+                
+                <!-- Búsqueda -->
+                <div class="mb-6">
+                    <label for="search-input" class="sr-only">Buscar por nombre</label>
+                    <input type="text" id="search-input" oninput="applyFilters()"
+                        placeholder="Buscar por nombre (ej: Escritorio, Silla)..."
+                        class="w-full border-gray-300 rounded-lg shadow-sm p-3 focus:border-primary focus:ring focus:ring-primary/50 mb-4">
+                </div>
+                
+                <!-- Ordenamiento -->
+                <div class="mb-8">
+                    <label for="sort-select" class="sr-only">Ordenar por</label>
+                    <select id="sort-select" onchange="applyFilters()"
+                        class="w-full border-gray-300 rounded-lg shadow-sm p-3 focus:border-primary focus:ring focus:ring-primary/50">
+                        <option value="name-asc">Nombre (A-Z)</option>
+                        <option value="name-desc">Nombre (Z-A)</option>
+                        <option value="price-asc">Precio (Menor a Mayor)</option>
+                        <option value="price-desc">Precio (Mayor a Menor)</option>
+                    </select>
+                </div>
+                
+                <!-- Filtros por Etiqueta (Tags) -->
+                <h2 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Filtros por Etiqueta (Tags)</h2>
+                <div id="tags-container" class="space-y-2">
+                    <p class="text-sm text-gray-500" id="loading-tags">Cargando tags...</p>
+                    <!-- Aquí se cargarán los checkboxes dinámicamente -->
+                </div>
+                <button id="clear-filters-btn" onclick="clearFilters()" class="mt-4 text-sm text-primary hover:underline transition duration-150 p-2 border border-primary rounded-lg">
+                    Limpiar Filtros
+                </button>
+            </div>
+
+            <!-- Columna de Productos (DERECHA) -->
+            <!-- APLICAMOS LA CLASE PERSONALIZADA 'products-column' AQUÍ -->
+            <div class="w-full order-1 lg:order-2 products-column">
+                <div id="products-container" class="grid-product-layout"> 
+                    <p class="text-center text-gray-500 col-span-full" id="loading-products">Cargando productos...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+
+<footer class="bg-purple-900 text-gray-300">
   <div class="container mx-auto py-14 px-6">
     <div class="grid md:grid-cols-12 grid-cols-1 gap-7">
       <div class="lg:col-span-4 col-span-12">
-        <a href="../index.html">  
-        <img
-        class="h-16"
-        src="..\assets\ValleventasFooter.png"
-        alt=""
-        />
-      </a>
-      <p class="mt-6 mx-2">
-      Compra con nosotros, se feliz  
-      </p> 
+        <a href="../index.html">
+          <img class="h-16" src="..\assets\ValleventasFooter.png" alt="" />
+        </a>
+        <p class="mt-6 mx-2">
+          Compra con nosotros, se feliz
+        </p>
       </div>
       <div class="lg:col-span-2 md:col-span-4 col-span-12">
         <h5 class="tracking-wide text-gray-100 font-semibold">Companía</h5>
         <ul class="list-none mt-6 space-y-2">
           <li>
-            <a 
-              href="catalogo.html"
-              class="text-gray-300 hover:text-gray-400 transition-all duration-500 ease-in-out"
-            >
-            Catálogo
+            <a href="catalogo.html" class="text-gray-300 hover:text-gray-400 transition-all duration-500 ease-in-out">
+              Catálogo
             </a>
           </li>
           <li>
-            <a 
-              href="faq.html"
-              class="text-gray-300 hover:text-gray-400 transition-all duration-500 ease-in-out"
-            >
-            Preguntas frecuentes
+            <a href="faq.html" class="text-gray-300 hover:text-gray-400 transition-all duration-500 ease-in-out">
+              Preguntas frecuentes
             </a>
           </li>
         </ul>
@@ -148,23 +322,17 @@
         <h5 class="tracking-wide text-gray-100 font-semibold">Links importantes</h5>
         <ul class="list-none mt-6 space-y-2">
           <li>
-            <a 
-              href="terminos.html"
-              class="text-gray-300 hover:text-gray-400 transition-all duration-500 ease-in-out"
-            >
-            Términos y condiciones
+            <a href="terminos.html" class="text-gray-300 hover:text-gray-400 transition-all duration-500 ease-in-out">
+              Términos y condiciones
             </a>
           </li>
           <li>
-            <a 
-              href="politicap.html"
-              class="text-gray-300 hover:text-gray-400 transition-all duration-500 ease-in-out"
-            >
-            Política de privacidad
+            <a href="politicap.html" class="text-gray-300 hover:text-gray-400 transition-all duration-500 ease-in-out">
+              Política de privacidad
             </a>
           </li>
         </ul>
-      </div>      
+      </div>
     </div>
   </div>
   <div class="border-t border-purple-800">
@@ -182,4 +350,6 @@
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
 <script src="../js/index.js"></script>
+<script src="../js/catalogo.js"></script>
+
 </html>
