@@ -53,9 +53,9 @@ let allAvailableTags = [];
  * Formatea un número como moneda (COP).
  * EXPONER GLOBALMENTE para que el HTML en el renderizado pueda llamarla
  */
-window.formatoMoneda = function(amount) {
-    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 3 }).format(amount);
-}
+    window.formatoMoneda = function(amount) {
+        return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(amount);
+    }
 
 // --- LÓGICA DE FILTRADO, BÚSQUEDA Y ORDENAMIENTO ---
 
@@ -157,7 +157,7 @@ function renderProducts(productsToRender) {
                             <button 
                                 onclick="event.preventDefault(); ${addItemCall}"
                                 ${buttonDisabled}
-                                class="block w-full rounded-sm text-white bg-primary p-4 text-sm font-medium transition hover:scale-[1.02] ${isSoldOut ? 'bg-gray-400 cursor-not-allowed' : 'hover:bg-secondary'}"
+                                class="block w-full rounded-sm text-white bg-blue-400 y p-4 text-sm font-medium transition hover:scale-[1.02] ${isSoldOut ? 'bg-gray-400 cursor-not-allowed' : 'hover:bg-purple-900'}"
                             >
                                 ${buttonText}
                             </button>

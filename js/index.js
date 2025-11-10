@@ -2,6 +2,7 @@ const localStorageSessionKey = 'currentDemoUser';
 const CART_ANON_KEY = 'carrito_anonimo';
 const INVENTORY_STORAGE_KEY = 'valleVentas_inventario';
 const REVIEWS_STORAGE_KEY = 'valleVentas_reviews';
+const ORDERS_STORAGE_KEY = 'valleVentas_ordenes';
 
 //Login
 function verificarAutenticacion() {
@@ -160,7 +161,7 @@ function formatoMoneda(cantidad) {
     return new Intl.NumberFormat('es-CO', {
         style: 'currency',
         currency: 'COP', 
-        minimumFractionDigits: 3,
+        minimumFractionDigits: 0,
     }).format(cantidad);
 }
 
@@ -407,6 +408,360 @@ function submitReview(productId, rating, comment) {
     document.getElementById('review-form').reset();
     alert("¡Reseña publicada con éxito!");
 }
+
+function loadOrders() {
+    const ordersJson = localStorage.getItem(ORDERS_STORAGE_KEY);
+    return ordersJson ? JSON.parse(ordersJson) : [];
+}
+
+function saveOrders(orders) {
+    localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
+}
+
+window.renderCheckoutSummary = function() {
+    const items = cargarCarrito();
+    const resumenContainer = document.getElementById('resumen-carrito');
+    const resumenTotalSpan = document.getElementById('resumen-total');
+    const totalPagarSpan = document.getElementById('total-a-pagar');
+
+    if (!resumenContainer || items.length === 0) {
+        resumenContainer.innerHTML = '<p class="text-red-500">Tu carrito está vacío. <a href="catalogo.html" class="text-blue-500 hover:underline">Ir a comprar</a></p>';
+        resumenTotalSpan.textContent = formatoMoneda(0);
+        totalPagarSpan.textContent = formatoMoneda(0);
+        return;
+    }
+
+    let total = 0;
+    let html = '';
+
+    items.forEach(item => {
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+        
+        html += `
+            <div class="flex justify-between text-sm">
+                <span class="text-gray-600">${item.name} (x${item.quantity})</span>
+                <span class="font-medium">${formatoMoneda(subtotal)}</span>
+            </div>
+        `;
+    });
+
+    resumenContainer.innerHTML = html;
+    resumenTotalSpan.textContent = formatoMoneda(total);
+    totalPagarSpan.textContent = formatoMoneda(total);
+};
+
+
+/**
+ * Auto-rellena los campos de Nombre, Apellido y Email si el usuario está logeado.
+ */
+window.autofillUserData = function() {
+    // Clave de datos: Donde se guarda el ARRAY de todos los perfiles de usuario ('demoUsers').
+    const USERS_DATA_KEY = 'demoUsers'; 
+
+    // 1. Obtener el email del usuario logueado
+    const userEmail = localStorage.getItem(localStorageSessionKey);
+    
+    // 2. Referencias a los campos del formulario
+    const emailInput = document.getElementById('email');
+    const nombreInput = document.getElementById('nombre');
+    const apellidoInput = document.getElementById('apellido');
+    const telefonoInput = document.getElementById('telefono');
+    const direccionInput = document.getElementById('direccion');
+
+    if (userEmail && emailInput) {
+        // Rellenar el email y hacerlo de solo lectura
+        emailInput.value = userEmail;
+        emailInput.readOnly = true; 
+        
+        // 3. Obtener el ARRAY de todos los usuarios
+        const usersArrayJSON = localStorage.getItem(USERS_DATA_KEY); 
+        
+        if (usersArrayJSON) {
+            try {
+                // Parsear el array completo
+                const usersArray = JSON.parse(usersArrayJSON); 
+                
+                // Buscar el usuario que coincida con el email logueado
+                // La imagen de tu localStorage indica que el email está en el campo 'email'.
+                const foundUser = usersArray.find(user => user.email === userEmail);
+                
+                if (foundUser) {
+                    // 4. Rellenar todos los campos:
+                    // Se usan las claves del objeto de usuario: name, lastname, phone, adress.
+                    if (nombreInput) nombreInput.value = foundUser.name || '';
+                    if (apellidoInput) apellidoInput.value = foundUser.lastname || ''; 
+                    if (telefonoInput) telefonoInput.value = foundUser.phone || ''; 
+                    if (direccionInput) direccionInput.value = foundUser.adress || ''; 
+                    
+                    console.log("Perfil autocompletado con éxito desde demoUsers.", foundUser);
+                } else {
+                    console.warn(`Usuario ${userEmail} logueado, pero no encontrado en el array 'demoUsers'.`);
+                }
+                
+            } catch (e) {
+                console.error("Error al parsear el array 'demoUsers' de localStorage:", e);
+            }
+        } else {
+             console.log("La clave 'demoUsers' no se encontró. No se puede autocompletar el perfil.");
+        }
+        
+    } else {
+        // Si no hay sesión iniciada, el campo email es editable
+        if (emailInput) emailInput.readOnly = false;
+    }
+};
+
+function autofillFromEmail(email, nombreInput, apellidoInput) {
+    if (!email || !nombreInput || !apellidoInput) return;
+    
+    try {
+        const parts = email.split('@')[0].split('.');
+        if (parts.length >= 2) {
+            // Capitalizar la primera letra del nombre y apellido
+            const firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+            const lastName = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
+            
+            nombreInput.value = firstName;
+            apellidoInput.value = lastName;
+        }
+    } catch (e) {
+        // En caso de emails extraños, se ignora
+    }
+}
+
+window.handlePurchase = function() {
+    clearMessage(); // Limpia mensajes anteriores al iniciar la compra
+    
+    const items = cargarCarrito();
+    // Reusa el mensajeDiv para mostrar los errores, ya no lo definimos al inicio.
+    const mensajeDiv = document.getElementById('mensaje-compra'); 
+
+    // 1. Recolectar datos del formulario
+    const customerData = {
+        nombre: document.getElementById('nombre').value.trim(),
+        apellido: document.getElementById('apellido').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        telefono: document.getElementById('telefono').value.trim(),
+        direccion: document.getElementById('direccion').value.trim(),
+    };
+
+    // ------------------------------------
+    // 2. VALIDACIONES DE DATOS (Usando showMessage en lugar de alert)
+    // ------------------------------------
+    
+    // Validar Carrito
+    if (items.length === 0) {
+        showMessage("Error: No hay productos en el carrito para comprar. Por favor, agregue artículos.");
+        return;
+    }
+    
+    // Validar Campos Requeridos
+    if (!customerData.nombre || !customerData.apellido || !customerData.telefono || !customerData.direccion || !customerData.email) {
+        showMessage("Por favor, completa todos los campos.");
+        return;
+    }
+
+     const nameRegex = /^[\p{L}\s'-]+$/u; 
+
+    if (!nameRegex.test(customerData.nombre)) {
+        showMessage("El campo Nombre solo debe contener letras, espacios y tildes.");
+        return;
+    }
+
+    if (!nameRegex.test(customerData.apellido)) {
+        showMessage("El campo Apellido solo debe contener letras, espacios y tildes.");
+        return;
+    }    
+    // Validar Teléfono (Ejemplo: al menos 7 dígitos y solo números)
+    const phoneRegex = /^\d{10}$/;
+    if (!customerData.telefono || !phoneRegex.test(customerData.telefono)) {
+        showMessage("Por favor, ingresa un número de teléfono válido (solo números, de 10 dígitos).");
+        return;
+    }
+    
+    // Validar Email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!customerData.email || !emailRegex.test(customerData.email)) {
+        showMessage("Por favor, ingresa una dirección de email válida.");
+        return;
+    }
+    
+    // ------------------------------------
+    // 3. CONTINUAR CON LA COMPRA 
+    // ------------------------------------
+    
+    const totalElement = document.getElementById('resumen-total');
+    const total = totalElement ? totalElement.textContent : 'N/A';
+
+    // ... (El resto de la lógica de creación de newOrder, guardado, y actualización de stock) ...
+    
+    const newOrder = {
+        id: Date.now(), 
+        date: new Date().toLocaleString('es-ES'),
+        total: total, 
+        productos: items.map(item => ({ 
+            id: item.id, 
+            name: item.name, 
+            quantity: item.quantity, 
+            price: item.price 
+        })),
+        cliente: customerData
+    };
+
+    const allOrders = loadOrders();
+    allOrders.push(newOrder);
+    saveOrders(allOrders);
+
+    const itemsBeforeEmptying = items; 
+    vaciarCarrito();
+    updateProductStock(itemsBeforeEmptying); 
+
+    // 4. Mostrar mensaje de éxito (Usando showMessage de tipo 'success')
+    document.getElementById('checkout-form').reset();
+    
+    const successMessage = `
+        <p class="font-bold">¡Compra Exitosa! 🎉</p>
+        <p>Tu orden #${newOrder.id} por ${newOrder.total} ha sido registrada.</p>
+        <p class="text-sm mt-1">Recibirás un email de confirmación en ${customerData.email}.</p>
+        <p class="mt-2"><a href="../index.html" class="text-purple-600 font-semibold hover:underline">Volver a la página principal</a></p>
+    `;
+    
+    showMessage(successMessage, 'success');
+
+    document.querySelector('button[type="submit"]').style.display = 'none';
+    window.renderCheckoutSummary();
+};
+
+function updateProductStock(purchasedItems) {
+    // 1. Obtener la versión actual y editable del inventario
+    // Usamos getProducts() para obtener la lista del localStorage
+    let currentInventory = getProducts(); 
+    
+    // Si getProducts devuelve INVENTARIO_INICIAL, necesitamos una copia editable.
+    // Usamos .slice() para asegurarnos de que no modificamos el INVENTARIO_INICIAL
+    // si estamos usando esa variable como fallback.
+    
+    // 2. Iterar sobre los artículos comprados
+    purchasedItems.forEach(item => {
+        // Aseguramos que el ID es un número para una búsqueda fiable
+        const itemId = Number(item.id); 
+        const purchasedQuantity = item.quantity;
+        
+        // 3. Encontrar el producto correspondiente en el inventario
+        const productIndex = currentInventory.findIndex(p => Number(p.id) === itemId);
+        
+        if (productIndex !== -1) {
+            const product = currentInventory[productIndex];
+            
+            // Validación de seguridad (debería ser innecesaria si ya se validó en el carrito)
+            if (product.stock >= purchasedQuantity) {
+                // 4. Reducir el stock
+                product.stock -= purchasedQuantity;
+                console.log(`Stock actualizado para ID ${itemId}: Nuevo stock = ${product.stock}`);
+            } else {
+                // Esto es un error grave en la lógica si ocurre en el checkout
+                console.error(`¡Error de stock! Se intentó comprar ${purchasedQuantity} unidades, pero solo quedan ${product.stock}. No se pudo actualizar el stock.`);
+            }
+        } else {
+            console.warn(`Producto con ID ${itemId} comprado no fue encontrado en el inventario.`);
+        }
+    });
+
+    // 5. Guardar el inventario actualizado de nuevo en localStorage
+    // Necesitamos la clave INVENTORY_STORAGE_KEY y JSON.stringify
+    localStorage.setItem(INVENTORY_STORAGE_KEY, JSON.stringify(currentInventory));
+    console.log("Inventario guardado después de la compra.");
+}
+
+function showMessage(message, type = 'error') {
+    const mensajeDiv = document.getElementById('mensaje-compra');
+    if (!mensajeDiv) return;
+
+    mensajeDiv.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'border-green-300', 'bg-red-100', 'text-red-700', 'border-red-300');
+    
+    if (type === 'success') {
+        mensajeDiv.classList.add('bg-green-100', 'text-green-700', 'border-green-300');
+    } else {
+        mensajeDiv.classList.add('bg-red-100', 'text-red-700', 'border-red-300');
+    }
+
+    mensajeDiv.innerHTML = `<p>${message}</p>`;
+}
+
+/**
+ * Limpia y oculta el div de mensajes.
+ */
+function clearMessage() {
+    const mensajeDiv = document.getElementById('mensaje-compra');
+    if (!mensajeDiv) return;
+    mensajeDiv.classList.add('hidden');
+    mensajeDiv.innerHTML = '';
+}
+
+window.renderOrderHistory = function() {
+    // Definición global para que sea accesible desde perfil.js
+    const orders = loadOrders();
+    const historyContainer = document.getElementById('purchase-history');
+    const userEmail = localStorage.getItem(localStorageSessionKey);
+
+    if (!historyContainer) {
+        console.warn("Contenedor 'purchase-history' no encontrado.");
+        return;
+    }
+
+    if (!userEmail) {
+        historyContainer.innerHTML = `
+            <div class="p-4 bg-red-100 border border-red-300 rounded-lg text-red-800">
+                <p class="font-bold">Acceso Denegado</p>
+                <p>Debes iniciar sesión para ver tu historial de pedidos.</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Filtrar órdenes por usuario loggeado
+    const userOrders = orders.filter(order => order.cliente && order.cliente.email === userEmail);
+    
+    if (userOrders.length === 0) {
+        historyContainer.innerHTML = '<p class="text-gray-500 p-4">Aún no has realizado ninguna compra con esta cuenta.</p>';
+        return;
+    }
+
+    // Ordenar por fecha (más reciente primero)
+    userOrders.sort((a, b) => b.id - a.id);
+
+    let html = userOrders.map(order => {
+        // Detalle de productos
+        const productList = order.productos.map(p => `
+            <li class="flex justify-between text-sm text-gray-700 ml-4">
+                <span>${p.name} (x${p.quantity})</span>
+                <span>${formatoMoneda(p.price * p.quantity)}</span>
+            </li>
+        `).join('');
+
+        return `
+            <div class="border border-gray-200 rounded-lg p-6 shadow-md bg-white hover:shadow-lg transition duration-200">
+                <div class="flex justify-between items-center border-b border-gray-100 pb-2 mb-3">
+                    <span class="font-bold text-lg text-primary">Orden #${order.id}</span>
+                    <span class="text-sm text-gray-500">Fecha: ${order.date}</span>
+                </div>
+                
+                <p class="font-semibold text-2xl text-gray-800 mb-1">Artículos Comprados:</p>
+                <ul class="font-semibold text-7xl list-disc space-y-1 pl-5">
+                    ${productList}
+                </ul>
+
+                <div class="p-6 mt-4 pt-3 border-t border-gray-200 flex justify-between items-center">
+                    <span class="font-bold text-xl text-gray-900">Total Pagado:</span>
+                    <span class="font-bold text-xl text-primary">${order.total} COP</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    historyContainer.innerHTML = html;
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     updateAuthUI();

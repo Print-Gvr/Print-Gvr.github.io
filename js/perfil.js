@@ -266,4 +266,52 @@ document.addEventListener('DOMContentLoaded', () => {
             showMessage('security-message', 'Error al actualizar la contraseña.', false);
         }
     });
+
+    function openTab(tabName) {
+    // Clases que definen el estado ACTIVO del botón
+    const activeClasses = ['bg-primary', 'shadow-md'];
+    
+    // Clases que definen el estado INACTIVO (incluyendo el hover)
+    const inactiveClasses = ['hover:bg-secondary']; 
+
+    // 1. Ocultar todos los contenidos
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    
+    // 2. Gestionar el estado de todos los botones
+    document.querySelectorAll('.tab-button').forEach(button => {
+        const buttonTabId = button.id.replace('tab-', '');
+
+        if (buttonTabId === tabName) {
+            // Botón ACTIVO
+            button.classList.add(...activeClasses);
+            button.classList.remove(...inactiveClasses);
+
+        } else {
+            // Botón INACTIVO
+            button.classList.remove(...activeClasses); 
+            button.classList.add(...inactiveClasses); 
+        }
+    });
+
+    // 3. Mostrar el contenido deseado
+    document.getElementById(`content-${tabName}`).classList.add('active');
+    
+    // 4. Lógica específica para Historial (¡La Corrección!)
+    if (tabName === 'history') {
+        // CORRECCIÓN: Llama a la función global que accede a localStorage desde index.js
+        if (window.renderOrderHistory) { 
+            window.renderOrderHistory(); 
+        } else {
+            // Fallback si la función no se cargó
+            console.error("Error: window.renderOrderHistory no está definida. Asegúrate de que index.js se cargue correctamente.");
+            document.getElementById('purchase-history').innerHTML = '<p class="text-red-500">Error al cargar historial (función no encontrada).</p>';
+        }
+    } else if (tabName === 'data' && window.loadProfileData) {
+        loadProfileData(); 
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    openTab('data'); 
+});
 });
