@@ -67,56 +67,65 @@
     .product-image-container img[onerror][style*="display: none"]+.fallback-icon {
       display: flex;
     }
-  
-        /* Importante: Asegurarse de que no hay reglas externas anulando el grid */
-        .grid-product-layout {
-            display: grid;
-            grid-template-columns: repeat(1, minmax(0, 1fr)); /* Default Mobile */
-            gap: 1.5rem; /* gap-6 */
-        }
-        @media (min-width: 1024px) {
-            .filter-column {
-                width: 300px; /* Ancho fijo para la columna de filtros en desktop */
-                flex-shrink: 0; 
-            }
-            .products-column {
-                flex-grow: 1; 
-            }
-        }
 
-        /*
+    /* Importante: Asegurarse de que no hay reglas externas anulando el grid */
+    .grid-product-layout {
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      /* Default Mobile */
+      gap: 1.5rem;
+      /* gap-6 */
+    }
+
+    @media (min-width: 1024px) {
+      .filter-column {
+        width: 300px;
+        /* Ancho fijo para la columna de filtros en desktop */
+        flex-shrink: 0;
+      }
+
+      .products-column {
+        flex-grow: 1;
+      }
+    }
+
+    /*
         * REGLAS CRÍTICAS PARA EL GRID DE PRODUCTOS (Masonry fix)
         */
-        .grid-product-layout {
-            display: grid;
-            grid-template-columns: repeat(1, minmax(0, 1fr)); /* Default Mobile */
-            gap: 1.5rem; /* gap-6 */
-        }
-        
-        /* Asegura que los enlaces hijos ocupen el 100% de la altura de la celda */
-        .grid-product-layout > a {
-            height: 100%; 
-            display: flex; 
-            flex-direction: column;
-        }
+    .grid-product-layout {
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      /* Default Mobile */
+      gap: 1.5rem;
+      /* gap-6 */
+    }
 
-        /* Responsive Columns */
-        @media (min-width: 640px) {
-            .grid-product-layout {
-                grid-template-columns: repeat(2, minmax(0, 1fr)); 
-            }
-        }
-        @media (min-width: 1024px) {
-            .grid-product-layout {
-                grid-template-columns: repeat(3, minmax(0, 1fr)); 
-            }
-        }
-        @media (min-width: 1280px) {
-            .grid-product-layout {
-                grid-template-columns: repeat(4, minmax(0, 1fr)); 
-            }
-        }
-    </style>
+    /* Asegura que los enlaces hijos ocupen el 100% de la altura de la celda */
+    .grid-product-layout>a {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Responsive Columns */
+    @media (min-width: 640px) {
+      .grid-product-layout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .grid-product-layout {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .grid-product-layout {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+  </style>
 
   <script type="module" src="../js/catalogo.js"></script>
 </head>
@@ -231,63 +240,63 @@
 
 <body class="bg-dark-bg font-sans">
 
-    <!-- Encabezado/Navbar -->
-    <header class="bg-white shadow-md">
-        <div class="container mx-auto px-4 py-4 flex justify-center">
-            <h1 class="text-4xl font-bold text-primary">Catálogo de Productos Ergonómicos</h1>
+  <!-- Encabezado/Navbar -->
+  <header class="bg-white shadow-md">
+    <div class="container mx-auto px-4 py-4 flex justify-center">
+      <h1 class="text-4xl font-bold text-primary">Catálogo de Productos Ergonómicos</h1>
+    </div>
+  </header>
+
+  <main class="container mx-auto p-4 sm:p-8">
+
+    <!-- Contenedor Principal de Filtros y Productos -->
+    <!-- Usamos flex-col/lg:flex-row para la estructura vertical en móvil y horizontal en desktop -->
+    <div class="flex flex-col lg:flex-row gap-8">
+
+      <!-- Columna de Filtros (IZQUIERDA) -->
+      <!-- APLICAMOS LA CLASE PERSONALIZADA 'filter-column' AQUÍ -->
+      <div class="w-full bg-white p-6 rounded-xl shadow-lg h-fit lg:sticky lg:top-8 order-2 lg:order-1 filter-column">
+
+        <!-- Búsqueda -->
+        <div class="mb-6">
+          <label for="search-input" class="sr-only">Buscar por nombre</label>
+          <input type="text" id="search-input" oninput="applyFilters()"
+            placeholder="Buscar por nombre (ej: Escritorio, Silla)..."
+            class="w-full border-gray-300 rounded-lg shadow-sm p-3 focus:border-primary focus:ring focus:ring-primary/50 mb-4">
         </div>
-    </header>
 
-    <main class="container mx-auto p-4 sm:p-8">
-
-        <!-- Contenedor Principal de Filtros y Productos -->
-        <!-- Usamos flex-col/lg:flex-row para la estructura vertical en móvil y horizontal en desktop -->
-        <div class="flex flex-col lg:flex-row gap-8">
-            
-            <!-- Columna de Filtros (IZQUIERDA) -->
-            <!-- APLICAMOS LA CLASE PERSONALIZADA 'filter-column' AQUÍ -->
-            <div class="w-full bg-white p-6 rounded-xl shadow-lg h-fit lg:sticky lg:top-8 order-2 lg:order-1 filter-column">
-                
-                <!-- Búsqueda -->
-                <div class="mb-6">
-                    <label for="search-input" class="sr-only">Buscar por nombre</label>
-                    <input type="text" id="search-input" oninput="applyFilters()"
-                        placeholder="Buscar por nombre (ej: Escritorio, Silla)..."
-                        class="w-full border-gray-300 rounded-lg shadow-sm p-3 focus:border-primary focus:ring focus:ring-primary/50 mb-4">
-                </div>
-                
-                <!-- Ordenamiento -->
-                <div class="mb-8">
-                    <label for="sort-select" class="sr-only">Ordenar por</label>
-                    <select id="sort-select" onchange="applyFilters()"
-                        class="w-full border-gray-300 rounded-lg shadow-sm p-3 focus:border-primary focus:ring focus:ring-primary/50">
-                        <option value="name-asc">Nombre (A-Z)</option>
-                        <option value="name-desc">Nombre (Z-A)</option>
-                        <option value="price-asc">Precio (Menor a Mayor)</option>
-                        <option value="price-desc">Precio (Mayor a Menor)</option>
-                    </select>
-                </div>
-                
-                <!-- Filtros por Etiqueta (Tags) -->
-                <h2 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Filtros por Etiqueta (Tags)</h2>
-                <div id="tags-container" class="space-y-2">
-                    <p class="text-sm text-gray-500" id="loading-tags">Cargando tags...</p>
-                    <!-- Aquí se cargarán los checkboxes dinámicamente -->
-                </div>
-                <button id="clear-filters-btn" onclick="clearFilters()" class="mt-4 text-sm text-primary hover:underline transition duration-150 p-2 border border-primary rounded-lg">
-                    Limpiar Filtros
-                </button>
-            </div>
-
-            <!-- Columna de Productos (DERECHA) -->
-            <!-- APLICAMOS LA CLASE PERSONALIZADA 'products-column' AQUÍ -->
-            <div class="w-full order-1 lg:order-2 products-column">
-                <div id="products-container" class="grid-product-layout"> 
-                    <p class="text-center text-gray-500 col-span-full" id="loading-products">Cargando productos...</p>
-                </div>
-            </div>
+        <!-- Ordenamiento -->
+        <div class="mb-8">
+          <label for="sort-select" class="sr-only">Ordenar por</label>
+          <select id="sort-select">
+            <option value="name_asc">Nombre (A-Z)</option>
+            <option value="name_desc">Nombre (Z-A)</option>
+            <option value="price_asc">Precio (Menor a Mayor)</option>
+            <option value="price_desc">Precio (Mayor a Menor)</option>
+          </select>
         </div>
-    </main>
+
+        <!-- Filtros por Etiqueta (Tags) -->
+        <h2 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Filtros por Etiqueta (Tags)</h2>
+        <div id="tags-container" class="space-y-2">
+          <p class="text-sm text-gray-500" id="loading-tags">Cargando tags...</p>
+          <!-- Aquí se cargarán los checkboxes dinámicamente -->
+        </div>
+        <button id="clear-filters-btn" onclick="clearFilters()"
+          class="mt-4 text-sm text-primary hover:underline transition duration-150 p-2 border border-primary rounded-lg">
+          Limpiar Filtros
+        </button>
+      </div>
+
+      <!-- Columna de Productos (DERECHA) -->
+      <!-- APLICAMOS LA CLASE PERSONALIZADA 'products-column' AQUÍ -->
+      <div class="w-full order-1 lg:order-2 products-column">
+        <div id="products-container" class="grid-product-layout">
+          <p class="text-center text-gray-500 col-span-full" id="loading-products">Cargando productos...</p>
+        </div>
+      </div>
+    </div>
+  </main>
 
 </body>
 

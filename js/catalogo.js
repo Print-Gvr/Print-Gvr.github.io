@@ -17,7 +17,7 @@ const initialProducts = [];
  * Si no encuentra nada, retorna un array vacío.
  * @returns {Array<Object>} La lista de productos.
  */
-function initializeInventory() {
+function initializeInventario() {
     try {
         const storedInventory = localStorage.getItem(INVENTORY_STORAGE_KEY);
         if (!storedInventory) return initialProducts;
@@ -57,15 +57,6 @@ window.formatoMoneda = function(amount) {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 3 }).format(amount);
 }
 
-/**
- * Placeholder para la función del carrito.
- * EXPONER GLOBALMENTE para que el HTML en el renderizado pueda llamarla
- */
-window.agregarItem = function(id, name, price, image) {
-    console.log(`[CARRITO] Agregando: ${name} (ID: ${id}) por ${formatoMoneda(price)}`);
-    // alert(`Producto agregado al carrito (Simulación):\n${name}`); // Comentado para evitar interrupciones
-}
-
 // --- LÓGICA DE FILTRADO, BÚSQUEDA Y ORDENAMIENTO ---
 
 function filterAndSearchProducts(productsList, searchText, activeTags) {
@@ -98,10 +89,11 @@ function sortProducts(productsList, sortKey, sortDirection) {
         if (sortKey === 'name') {
             comparison = String(valA).localeCompare(String(valB));
         } else if (sortKey === 'price') {
-            // Se resta directamente, ya que initializeInventory garantiza que son Numbers
+            // Esto ordena de menor a mayor (ascendente)
             comparison = valA - valB; 
         }
         
+        // Aquí aplicas el cambio de dirección.
         return sortDirection === 'desc' ? comparison * -1 : comparison;
     });
 }
@@ -144,13 +136,6 @@ function renderProducts(productsToRender) {
         html += `
             <div class="product-card">
                 <a href="info.html?id=${product.id}" class="group relative block overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition duration-300">
-                    
-                    <button class="absolute end-4 top-4 z-10 rounded-full bg-white p-1.5 text-gray-900 transition hover:text-gray-900/75">
-                        <span class="sr-only">Wishlist</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"></path>
-                        </svg>
-                    </button>
 
                     <img 
                         src="${product.image}" 
@@ -224,8 +209,9 @@ function updateCatalogView() {
     console.log("Actualizando vista del catálogo...");
     const searchText = document.getElementById('search-input').value;
     const sortValue = document.getElementById('sort-select').value;
-    
     const [sortKey, sortDirection] = sortValue.split('_');
+
+    console.log(`Intentando ordenar por clave: ${sortKey}, dirección: ${sortDirection}`);
 
     const filtered = filterAndSearchProducts(allProducts, searchText, activeTags);
     const finalProducts = sortProducts(filtered, sortKey, sortDirection);
@@ -238,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM Cargado. Iniciando aplicación del catálogo.");
     
     // 1. Cargar productos SOLAMENTE desde localStorage
-    allProducts = initializeInventory();
+    allProducts = initializeInventario();
     
     if (allProducts.length === 0) {
         document.getElementById('products-container').innerHTML = '<p class="col-span-full text-center text-xl text-red-500 mt-10 p-6 bg-white rounded-lg shadow-inner">Error: No se pudieron cargar datos. Asegúrate de que el inventario se haya guardado en localStorage correctamente.</p>';

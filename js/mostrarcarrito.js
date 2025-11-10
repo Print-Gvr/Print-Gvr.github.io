@@ -64,7 +64,7 @@ function cargarPagCarrito() {
                     value="${item.quantity}"
                     onchange="${modifyCall}" 
                     class="p-1 text-center border rounded-md focus:ring-purple-500 focus:border-purple-500"
-                    style="width: 35px;"
+                    style="width: 45px;"
                     />
                 
                 <span class="font-bold text-lg text-purple-700 w-20 text-right">${sumaFormato}</span>

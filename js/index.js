@@ -46,7 +46,7 @@ const INVENTARIO_INICIAL = [
     {
         id: 1,
         name: "Escritorio Ejecutivo Nórdico en Madera de Nogal",
-        price: 900.000,
+        price: 900000,
         stock: 8,
         description: "Elegancia Minimalista para el Profesional Moderno Transforme su espacio de trabajo con el Escritorio Nórdico Escandi una pieza que combina la calidez atemporal de la madera con un diseño limpio y minimalista. Creado para el profesional que valora tanto la estética como la funcionalidad, este escritorio es la pieza central perfecta para una oficina en casa o un despacho ejecutivo. <br><br> <b>Características Destacadas</b> <br><br>  <b>- Diseño Flotante y Estilizado:</b> Sus líneas puras y patas ligeramente inclinadas, características del diseño escandinavo, crean una apariencia ligera y aireada, maximizando la sensación de espacio en cualquier habitación. <br><br> <b>- Almacenamiento Discreto:</b> Incluye un cajón deslizable con herrajes de alta calidad, ideal para guardar de forma organizada sus esenciales de oficina y mantener la superficie de trabajo impecablemente despejada <br><br><b>- Acabado Premium:</b> La superficie de madera ha sido pulida y sellada para ofrecer una durabilidad superior y una resistencia notable a derrames y el desgaste diario.<br><br> <b>Especificaciones</b><br><br> <b>Material:</b> Madera maciza de Nogal y enchape de alta densidad.<br> <b>Medidas:</b> Ancho: 140 cm  Profundidad: 70 cm / Altura: 75 cm <br> <b>Peso:</b> 35 – 45 kg. <br> <b>Estilo:</b> Nórdico / Moderno <br> <b>Uso:</b> Oficina en Casa, Despacho, Estudio",
         image: "../assets/escritorioMadera/1.webp",
@@ -60,7 +60,7 @@ const INVENTARIO_INICIAL = [
     {
         id: 2,
         name: "Archivador Minimalista 'Cubo'",
-        price: 450.000,
+        price: 450000,
         stock: 10,
         description: "<b>Organización Vertical, Diseño de Vanguardia</b><br><br>Presentamos el archivador 'Cubo', la solución definitiva para mantener tu oficina impecable sin sacrificar el estilo. Diseñado bajo una estética minimalista, este archivador es un complemento perfecto para cualquier espacio de trabajo moderno, ofreciendo <b>almacenamiento de alto rendimiento</b> en una silueta compacta y elegante.<br><br><b>Características Clave</b><br><br>• <b>Líneas Puras:</b> Su diseño de cubo monolítico, sin tiradores visibles (gracias al sistema push-to-open o bordes integrados), se integra perfectamente en entornos ejecutivos o de home office contemporáneos.<br><br>• <b>Movilidad y Estabilidad:</b> Equipado con <b>ruedas ocultas</b> de alta resistencia que permiten moverlo fácilmente bajo cualquier escritorio o mesa, o con niveladores fijos para mayor estabilidad (dependiendo del modelo específico).<br><br>• <b>Capacidad Ejecutiva:</b> Perfecto para mantener documentos sensibles o de uso frecuente a la mano, con espacio diseñado para <b>carpetas colgantes</b> de tamaño carta u oficio.<br><br><b>Especificaciones Técnicas</b><br><br><b>Material:</b> Estructura en lámina de acero laminado en frío (Calibre 22-24) para máxima durabilidad, con acabado de pintura electrostática <b>blanca o negra mate</b>.<br><b>Medidas:</b> Alto: 70 cm / Fondo: 48 cm / Ancho: 47 cm.<br><b>Peso:</b> 16 kg<br><b>Cajones:</b> 2 cajones con <b>correderas telescópicas</b> de extensión total.<br><b>Seguridad:</b> Cerradura central con llave para bloquear todos los cajones.",
         image: "../assets/archivador/1.webp",
@@ -72,7 +72,7 @@ const INVENTARIO_INICIAL = [
     {
         id: 3,
         name: "Silla Ejecutiva Ergonómica 'Vertex'",
-        price: 850.000,
+        price: 850000,
         stock: 15,
         description: "Modelo deportivo y casual.",
         image: "../assets/sillaOficina/1.webp",
@@ -84,7 +84,7 @@ const INVENTARIO_INICIAL = [
     {
         id: 4,
         name: "Reposapiés Ergonómico 'Aura'",
-        price: 100.000,
+        price: 100000,
         stock: 6,
         description: "Modelo deportivo y casual.",
         image: "../assets/reposaPies/1.webp",
@@ -96,7 +96,7 @@ const INVENTARIO_INICIAL = [
     {
         id: 5,
         name: "Soporte para Laptop 'Elevate'",
-        price: 60.000,
+        price: 60000,
         stock: 20,
         description: "Modelo deportivo y casual.",
         image: "../assets/soporteLaptop/1.webp",
@@ -108,7 +108,7 @@ const INVENTARIO_INICIAL = [
     {
         id: 6,
         name: "Escritorio Elevable 'Kinetic Pro'",
-        price: 1600.000,
+        price: 1600000,
         stock: 4,
         description: "Modelo deportivo y casual.",
         image: "../assets/escritorioMotor/1.webp",
@@ -134,12 +134,26 @@ function initializeInventory() {
 
 function getProducts() {
     const inventoryJson = localStorage.getItem(INVENTORY_STORAGE_KEY);
+    let products = INVENTARIO_INICIAL; // Usamos inicial por defecto
 
     if (inventoryJson) {
-        return JSON.parse(inventoryJson);
+        try {
+            products = JSON.parse(inventoryJson);
+        } catch (e) {
+            console.error("Error al parsear el inventario de localStorage. Usando iniciales.", e);
+        }
     }
 
-    return INVENTARIO_INICIAL;
+    // Mapear y asegurar que ID, stock y price son números válidos para evitar fallos.
+    return products.map(p => ({
+        ...p,
+        // Convertimos el ID a número (ya que en INVENTARIO_INICIAL son números)
+        id: Number(p.id) || p.id, 
+        // Convertimos stock a número entero (lo más seguro)
+        stock: Math.round(Number(p.stock) || 0), 
+        // Convertimos price a número
+        price: Number(p.price) || 0
+    }));
 }
 
 function formatoMoneda(cantidad) {
@@ -242,24 +256,52 @@ function guardarCarrito(items) {
 
 //Funciones del carrito
 
-function agregarItem(productId, name, price, image, tags) {
-    let carrito = cargarCarrito();
+function agregarItem(productId, name, price, image) {
+    // 1. OBTENER INVENTARIO Y EL PRODUCTO ESPECÍFICO
+    const inventory = getProducts();
+    
+    // 🛑 CLAVE 1: Convertir productId a número para la búsqueda (siempre viene como string del DOM)
+    const numericProductId = Number(productId); 
+    
+    // CLAVE 2: Buscar el producto usando el ID numérico
+    const productInStock = inventory.find(p => p.id === numericProductId);
 
-    const itemExistente = carrito.find(item => item.id === productId)
+    // Si no lo encuentra o el stock es cero, mostramos la advertencia
+    if (!productInStock || productInStock.stock === 0) {
+        console.warn(`Producto ID ${productId} agotado o no encontrado.`);
+        alert(`Lo sentimos, el producto ${name} está agotado o no se encuentra.`);
+        return; 
+    }
+
+    // 2. OBTENER Y BUSCAR EN CARRITO
+    let carrito = cargarCarrito();
+    // CLAVE 3: Usar el ID numérico para buscar el item en el carrito
+    const itemExistente = carrito.find(item => item.id === numericProductId);
 
     if (itemExistente) {
-        itemExistente.quantity += 1;
+        // 3. ACTUALIZAR CANTIDAD (con validación de stock)
+        
+        // CORRECCIÓN LÓGICA: Solo aumenta si la cantidad actual es ESTRICTAMENTE MENOR al stock
+        if (itemExistente.quantity < productInStock.stock) {
+            itemExistente.quantity += 1;
+        } else {
+            console.warn(`No se puede agregar más. Stock máximo alcanzado: ${productInStock.stock}`);
+            alert(`Solo puedes agregar ${productInStock.stock} unidades de este producto (${name}).`);
+        }
     } else {
+        // 4. AGREGAR ITEM NUEVO
         const nuevoItem = {
-            id: productId,
+            id: numericProductId, // Guardamos el ID como número
             name: name,
-            price: price,
+            // Aseguramos que el precio sea numérico antes de guardarlo
+            price: Number(price) || 0, 
             quantity: 1,
             image: image,
         };
-        console.log(image);
         carrito.push(nuevoItem);
     }
+    
+    // 5. GUARDAR Y LOGUEAR
     guardarCarrito(carrito);
     console.log("Producto agregado/actualizado. Carrito actual:", carrito);
 }
