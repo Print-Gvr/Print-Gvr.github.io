@@ -604,6 +604,7 @@ function showMessage(message, type = 'error') {
 
     mensajeDiv.innerHTML = `<p>${message}</p>`;
 }
+
 function clearMessage() {
     const mensajeDiv = document.getElementById('mensaje-compra');
     if (!mensajeDiv) return;
