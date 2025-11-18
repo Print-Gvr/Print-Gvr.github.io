@@ -4,12 +4,20 @@ const INVENTORY_STORAGE_KEY = 'valleVentas_inventario';
 const REVIEWS_STORAGE_KEY = 'valleVentas_reviews';
 const ORDERS_STORAGE_KEY = 'valleVentas_ordenes';
 
-/** Verifica si existe una sesión activa en localStorage. */
+//Login
 function verificarAutenticacion() {
+    // 1. Declarar y ASIGNAR el valor de la sesión a una variable local
     const sessionValue = localStorage.getItem(localStorageSessionKey);
+
+    // 2. Ahora sí podemos usar la variable 'sessionValue' para debugging
+    console.log("DEBUG: Clave de Sesión:", localStorageSessionKey);
+    console.log("DEBUG: Valor de la Sesión:", sessionValue);
+    console.log("DEBUG: Estado de Autenticación (isLoggedIn):", !!sessionValue);
+
+    // 3. Devolver el valor booleano
     return !!sessionValue;
 }
-/** Actualiza la interfaz de usuario (header) basándose en el estado de autenticación. */
+
 function updateAuthUI() {
 
     const isLoggedIn = verificarAutenticacion();
@@ -27,7 +35,6 @@ function updateAuthUI() {
     }
 }
 
-/** Elimina la clave de sesión de localStorage y redirige al inicio. */
 function cerrarSesion() {
     localStorage.removeItem(localStorageSessionKey);
     alert('Has cerrado sesión correctamente. ¡Vuelve pronto!');
@@ -35,6 +42,7 @@ function cerrarSesion() {
 }
 
 //Inventario
+
 const INVENTARIO_INICIAL = [
     {
         id: 1,
@@ -67,7 +75,7 @@ const INVENTARIO_INICIAL = [
         name: "Silla Ejecutiva Ergonómica 'Vertex'",
         price: 850000,
         stock: 15,
-        description: "<b>Ergonomía de Alto Rendimiento para Jornadas Largas</b><br> Conoce la Silla Ejecutiva Vertex, diseñada para profesionales que exigen el máximo confort y soporte durante largas jornadas de trabajo. Fusionando un diseño vanguardista con principios ergonómicos avanzados, esta silla no solo transforma tu oficina, sino que también invierte en tu bienestar y productividad.<br><br><b>Características que Marcan la Diferencia</b><br><br>* <b>Respaldo Mallado Transpirable:</b> El tejido de malla de alta densidad favorece la circulación de aire, manteniendo tu espalda fresca y seca, a la vez que proporciona un soporte lumbar flexible y dinámico.<br>*<b>Soporte Completo:</b> Incluye un reposacabezas ajustable para aliviar la tensión cervical y brazos regulables que se adaptan a la altura de tu escritorio, promoviendo una postura corporal correcta.<br>* <b>Mecanismo Sincronizado:</b> Permite inclinar el respaldo y el asiento de forma coordinada, adaptándose a tu movimiento y asegurando un equilibrio perfecto en cualquier posición de descanso o trabajo.<br><br><b>Especificaciones Técnicas</b><br><br><b>Materiales:</b> Estructura/Base: Nylon de alta resistencia o Aluminio pulido. Tapicería: Malla técnica transpirable (Respaldo) y espuma de alta densidad con tapizado de tela (Asiento).<br><b>Medidas:</b> Altura Total: 115 cm a 130 cm (Ajustable) / Ancho Asiento: 50 cm / Profundidad Asiento: 50 cm.<br><b>Peso:</b> 18 kg, robusta para soportar hasta 120 kg).<br><b>Ajustes:</b> Altura, Inclinación (con bloqueo), Tensión lumbar, Altura de brazos, Ángulo de reposacabezas.<br>",
+        description: "Modelo deportivo y casual.",
         image: "../assets/sillaOficina/1.webp",
         secondary_images: [
             "../assets/sillaOficina/2.webp"
@@ -79,7 +87,7 @@ const INVENTARIO_INICIAL = [
         name: "Reposapiés Ergonómico 'Aura'",
         price: 100000,
         stock: 6,
-        description: "<b>Bienestar Silencioso Bajo tu Escritorio</b><br>Descubre el reposapiés Aura, la pieza que completa tu estación de trabajo ergonómica. Diseñado bajo el principio minimalista, ofrece un soporte esencial sin desentonar con la estética de tu oficina. Es la solución discreta para mejorar la postura, la circulación y reducir la fatiga durante largas horas sentado.<br><br><b>Características que Impulsan tu Comodidad</b><br><br>* <b>Ángulo de Inclinación Dinámico:</b> Permite un movimiento suave de balanceo, estimulando la circulación sanguínea en las piernas y previniendo la rigidez y el hormigueo.<br>* <b>Diseño Minimalista:</b> Su estructura limpia y su perfil bajo lo hacen virtualmente invisible, enfocándose solo en la función ergonómica sin añadir desorden visual.<br>* <b>Superficie Antideslizante:</b> La plataforma superior está diseñada con texturas o gomas para asegurar que tus pies permanezcan en su lugar de forma segura y cómoda.<br><br><b>Especificaciones Técnicas</b><br><br><b>Materiales:</b> Plataforma: Plástico ABS de alto impacto. Estructura/Base: Acero tubular.<br><b>Medidas:</b> Ancho: 45 cm / Fondo: 30 cm a 35 cm / Altura Mínima: 10 cm a 12 cm.<br><b>Peso:</b> 2 kg (Ligero para ajustar, pero firme y estable).<br><b>Ajustes:</b> Inclinación y/o Altura<br>",
+        description: "Modelo deportivo y casual.",
         image: "../assets/reposaPies/1.webp",
         secondary_images: [
             "../assets/reposaPies/2.webp"
@@ -91,7 +99,7 @@ const INVENTARIO_INICIAL = [
         name: "Soporte para Laptop 'Elevate'",
         price: 60000,
         stock: 20,
-        description: "<b>La Postura Perfecta para tu Productividad Móvil</b><br>Presentamos el soporte para laptop Elevate, la herramienta esencial para transformar cualquier superficie en una estación de trabajo ergonómica y moderna. Su diseño minimalista y estructura de líneas limpias no solo complementan tu estilo, sino que te ayudan a elevar la pantalla a la altura ideal de los ojos, aliviando la tensión en el cuello y la espalda.<br><br><b>Características que Optimizan tu Trabajo</b><br><br>* <b>Ergonomía Instantánea:</b> Eleva tu pantalla para alinearla con la vista, mejorando la postura y reduciendo la fatiga visual y cervical.<br>* <b>Refrigeración Activa:</b> El diseño abierto y minimalista maximiza el flujo de aire alrededor de tu laptop, previniendo el sobrecalentamiento y manteniendo el rendimiento óptimo del equipo.<br>* <b>Portabilidad y Estabilidad:</b> Es ligero y desmontable/plegable, facilitando su transporte. Sus bases de silicona o caucho aseguran que el soporte y la laptop permanezcan fijos.<br><br><b>Especificaciones Técnicas</b><br><br><b>Materiales:</b> Aluminio Anodizado.<br><b>Medidas:</b> Ancho de Base: 25 cm / Fondo: 28 cm / Altura Elevación: 10 cm<br><b>Peso:</b> 0.5 kg.<br><b>Capacidad:</b> Soporta laptops de hasta 5 kg.",
+        description: "Modelo deportivo y casual.",
         image: "../assets/soporteLaptop/1.webp",
         secondary_images: [
             "../assets/soporteLaptop/2.webp"
@@ -103,7 +111,7 @@ const INVENTARIO_INICIAL = [
         name: "Escritorio Elevable 'Kinetic Pro'",
         price: 1600000,
         stock: 4,
-        description: "<b>Trabaja en Movimiento: Adaptabilidad y Ergonomía del Siglo XXI</b><br>El escritorio Kinetic Pro es más que una superficie de trabajo; es una inversión en tu salud y productividad. Con un diseño moderno y minimalista, este escritorio con motor te permite pasar fluidamente de la posición sentada a la posición de pie en segundos, ajustándose perfectamente a tu ritmo biológico y previniendo los problemas de salud asociados al sedentarismo.<br><br><b>Características que Impulsan tu Día</b><br><br>* <b>Ajuste Motorizado Silencioso:</b> Equipado con un sistema de motor dual potente y casi inaudible, el ajuste de altura es suave y rápido, sin interrumpir tu concentración.<br>* <b>Memoria Programable:</b> Incluye un panel de control digital con la opción de guardar 3 o 4 alturas preestablecidas (sentado, de pie, altura de reunión), cambiando solo con tocar un botón.<br>* <b>Diseño Robusto y Versátil:</b> La estructura de acero soporta con seguridad todo tu equipo, desde múltiples monitores hasta pesados archivos, asegurando cero tambaleo en cualquier altura.<br><br><b>Especificaciones Técnicas</b><br><br><b>Materiales:</b> Base/Patas: Acero laminado de alta resistencia con acabado de pintura electrostática. <br>Superficie: Tablero de Melamina de alta densidad (25 mm) con acabado en Nogal, Roble claro.<br><b>Medidas:</b> Ancho: 160 cm / Fondo: 80 cm.<br><b>Rango de Altura:</b> 70 cm (sentado) a 120 cm (de pie).<br><b>Peso:</b> 50 kg.<br><b>Capacidad de Carga:</b> 120 kg.",
+        description: "Modelo deportivo y casual.",
         image: "../assets/escritorioMotor/1.webp",
         secondary_images: [
             "../assets/escritorioMotor/2.webp"
@@ -112,7 +120,6 @@ const INVENTARIO_INICIAL = [
     }
 ];
 
-/** Inicializa el inventario en localStorage si no existe, usando la clave INVENTORY_STORAGE_KEY. */
 function initializeInventory() {
     const storedInventory = localStorage.getItem(INVENTORY_STORAGE_KEY);
 
@@ -126,10 +133,9 @@ function initializeInventory() {
     }
 }
 
-/** Recupera la lista de productos de localStorage o usa el inventario inicial, asegurando tipos de datos correctos. */
 function getProducts() {
     const inventoryJson = localStorage.getItem(INVENTORY_STORAGE_KEY);
-    let products = INVENTARIO_INICIAL; 
+    let products = INVENTARIO_INICIAL; // Usamos inicial por defecto
 
     if (inventoryJson) {
         try {
@@ -142,13 +148,15 @@ function getProducts() {
     // Mapear y asegurar que ID, stock y price son números válidos para evitar fallos.
     return products.map(p => ({
         ...p,
+        // Convertimos el ID a número (ya que en INVENTARIO_INICIAL son números)
         id: Number(p.id) || p.id, 
+        // Convertimos stock a número entero (lo más seguro)
         stock: Math.round(Number(p.stock) || 0), 
+        // Convertimos price a número
         price: Number(p.price) || 0
     }));
 }
 
-/** Formatear cantidades numéricas al formato COP. */
 function formatoMoneda(cantidad) {
     return new Intl.NumberFormat('es-CO', {
         style: 'currency',
@@ -157,10 +165,12 @@ function formatoMoneda(cantidad) {
     }).format(cantidad);
 }
 
-/** Renderiza la tarjeta de los productos en el catálogo. */
 function renderProducts() {
-    const productList = getProducts(); 
+    const productList = getProducts(); // Obtiene la lista de productos del inventario
     const container = document.getElementById('products-container');
+
+
+    // Verifica si el contenedor existe
     if (!container) {
         console.error("El contenedor 'products-container' no fue encontrado.");
         return;
@@ -169,14 +179,18 @@ function renderProducts() {
     let html = '';
 
     productList.forEach(product => {
+        // Preparación de variables
         const formattedPrice = formatoMoneda(product.price);
         const isSoldOut = product.stock === 0;
         const buttonText = isSoldOut ? 'Agotado' : 'Agregar al carrito';
         const buttonDisabled = isSoldOut ? 'disabled' : '';
 
+        // Función de JS que se ejecuta al hacer clic
+        // Importante: Escapar comillas en el nombre del producto
        
  const addItemCall = `agregarItem(${product.id}, '${product.name.replace(/'/g, "\\'")}', ${product.price}, '${product.image}')`;
 
+        // --- INICIO DEL TEMPLATE LITERAL (TU NUEVO ESTILO TAILWIND) ---
         html += `
             <div class="product-card">
                 <a href="info.html?id=${product.id}" class="group relative block overflow-hidden">
@@ -219,7 +233,6 @@ function renderProducts() {
 
 //Carga y guardado del carrito
 
-/** Determinar clave de almacenamiento del carrito usando el email */
 function getCartKey() {
     const userEmail = localStorage.getItem(localStorageSessionKey);
 
@@ -230,37 +243,46 @@ function getCartKey() {
     }
 }
 
-/** Cargar carrito de localStorage basado en la clave de sesión. */
 function cargarCarrito() {
     const key = getCartKey();
     const itemsJson = localStorage.getItem(key);
     return itemsJson ? JSON.parse(itemsJson) : [];
 }
 
-/** Guardar lista de ítems del carrito en localStorage usando la clave de sesión. */
 function guardarCarrito(items) {
     const key = getCartKey();
     localStorage.setItem(key, JSON.stringify(items));
 }
 
+
 //Funciones del carrito
 
-/** Agregar producto al carrito, verificar el stock y manejar cantidad máxima. */
 function agregarItem(productId, name, price, image) {
+    // 1. OBTENER INVENTARIO Y EL PRODUCTO ESPECÍFICO
     const inventory = getProducts();
+    
+    // 🛑 CLAVE 1: Convertir productId a número para la búsqueda (siempre viene como string del DOM)
     const numericProductId = Number(productId); 
+    
+    // CLAVE 2: Buscar el producto usando el ID numérico
     const productInStock = inventory.find(p => p.id === numericProductId);
 
+    // Si no lo encuentra o el stock es cero, mostramos la advertencia
     if (!productInStock || productInStock.stock === 0) {
         console.warn(`Producto ID ${productId} agotado o no encontrado.`);
         alert(`Lo sentimos, el producto ${name} está agotado o no se encuentra.`);
         return; 
     }
- 
+
+    // 2. OBTENER Y BUSCAR EN CARRITO
     let carrito = cargarCarrito();
+    // CLAVE 3: Usar el ID numérico para buscar el item en el carrito
     const itemExistente = carrito.find(item => item.id === numericProductId);
 
     if (itemExistente) {
+        // 3. ACTUALIZAR CANTIDAD (con validación de stock)
+        
+        // CORRECCIÓN LÓGICA: Solo aumenta si la cantidad actual es ESTRICTAMENTE MENOR al stock
         if (itemExistente.quantity < productInStock.stock) {
             itemExistente.quantity += 1;
         } else {
@@ -268,19 +290,24 @@ function agregarItem(productId, name, price, image) {
             alert(`Solo puedes agregar ${productInStock.stock} unidades de este producto (${name}).`);
         }
     } else {
+        // 4. AGREGAR ITEM NUEVO
         const nuevoItem = {
-            id: numericProductId, 
+            id: numericProductId, // Guardamos el ID como número
             name: name,
+            // Aseguramos que el precio sea numérico antes de guardarlo
             price: Number(price) || 0, 
             quantity: 1,
             image: image,
         };
         carrito.push(nuevoItem);
     }
+    
+    // 5. GUARDAR Y LOGUEAR
     guardarCarrito(carrito);
+    console.log("Producto agregado/actualizado. Carrito actual:", carrito);
 }
 
-/** Eliminar producto específico del carrito por ID y recargar página. */
+
 function eliminarItem(productId) {
     const idBorrar = parseInt(productId);
     let carrito = cargarCarrito();
@@ -294,18 +321,20 @@ function eliminarItem(productId) {
     }
 }
 
-/** Modificar cantidad de un ítem del carrito, validar stock disponible y eliminar del carrito si es 0. */
 function modificarCantidad(itemId, newQuantity) {
     let items = cargarCarrito();
     const quantity = parseInt(newQuantity);
 
+    // Obtener el inventario para validar el stock
     const inventory = getProducts();
     const product = inventory.find(p => p.id == itemId);
 
-    if (!product) return; 
+    if (!product) return; // Si el producto no existe en el inventario, sal
 
+    // 🛑 VALIDACIÓN CRÍTICA: Limitar la cantidad al stock disponible
     if (quantity > product.stock) {
         alert(`Solo quedan ${product.stock} unidades en stock, elije una cantidad valida.`);
+        // Opcional: Establecer la cantidad máxima en lugar de salir
         items[itemIndex].quantity = product.stock;
     }
 
@@ -317,6 +346,7 @@ function modificarCantidad(itemId, newQuantity) {
     const itemIndex = items.findIndex(item => item.id == itemId);
 
     if (itemIndex !== -1) {
+        // Asegúrate de que no se haya excedido el stock si no salimos antes
         items[itemIndex].quantity = Math.min(quantity, product.stock);
         guardarCarrito(items);
 
@@ -326,23 +356,31 @@ function modificarCantidad(itemId, newQuantity) {
     }
 }
 
+function vaciarCarrito() {
+    guardarCarrito([]);
+    console.log("Carrito vaciado.");
+
+    if (window.location.pathname.includes('carrito.html')) {
+        location.reload();
+    }
+}
+
 //Reseñas
 
-/** Cargar reseñas del LocalStorage. */
 function loadReviews() {
     const reviewsJson = localStorage.getItem(REVIEWS_STORAGE_KEY);
     return reviewsJson ? JSON.parse(reviewsJson) : [];
 }
 
-/** Guardar array de reseñas en localStorage. */
 function saveReviews(reviews) {
     localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(reviews));
 }
 
-/** Procesar y almacenar reseña de producto específico. */
+// --- Función para Guardar una Nueva Reseña ---
 function submitReview(productId, rating, comment) {
     const currentUserEmail = localStorage.getItem(localStorageSessionKey);
 
+    // 🛑 Bloqueo si el usuario no está logeado
     if (!currentUserEmail) {
         alert("Debes iniciar sesión para publicar una reseña.");
         return;
@@ -371,18 +409,15 @@ function submitReview(productId, rating, comment) {
     alert("¡Reseña publicada con éxito!");
 }
 
-/** Cargar pedidos de LocalStorage. */
 function loadOrders() {
     const ordersJson = localStorage.getItem(ORDERS_STORAGE_KEY);
     return ordersJson ? JSON.parse(ordersJson) : [];
 }
 
-/** Guardar array de pedidos en localStorage. */
 function saveOrders(orders) {
     localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
 }
 
-/** Renderiza el resumen de los productos en el carrito y calcula el total a pagar en la página de checkout. */
 window.renderCheckoutSummary = function() {
     const items = cargarCarrito();
     const resumenContainer = document.getElementById('resumen-carrito');
@@ -417,11 +452,17 @@ window.renderCheckoutSummary = function() {
 };
 
 
-/**Auto-rellenar campos Nombre, Apellido y Email si el usuario está logeado para el checkout.*/
+/**
+ * Auto-rellena los campos de Nombre, Apellido y Email si el usuario está logeado.
+ */
 window.autofillUserData = function() {
+    // Clave de datos: Donde se guarda el ARRAY de todos los perfiles de usuario ('demoUsers').
     const USERS_DATA_KEY = 'demoUsers'; 
-    const userEmail = localStorage.getItem(localStorageSessionKey);
 
+    // 1. Obtener el email del usuario logueado
+    const userEmail = localStorage.getItem(localStorageSessionKey);
+    
+    // 2. Referencias a los campos del formulario
     const emailInput = document.getElementById('email');
     const nombreInput = document.getElementById('nombre');
     const apellidoInput = document.getElementById('apellido');
@@ -429,17 +470,25 @@ window.autofillUserData = function() {
     const direccionInput = document.getElementById('direccion');
 
     if (userEmail && emailInput) {
+        // Rellenar el email y hacerlo de solo lectura
         emailInput.value = userEmail;
         emailInput.readOnly = true; 
         
+        // 3. Obtener el ARRAY de todos los usuarios
         const usersArrayJSON = localStorage.getItem(USERS_DATA_KEY); 
         
         if (usersArrayJSON) {
             try {
+                // Parsear el array completo
                 const usersArray = JSON.parse(usersArrayJSON); 
+                
+                // Buscar el usuario que coincida con el email logueado
+                // La imagen de tu localStorage indica que el email está en el campo 'email'.
                 const foundUser = usersArray.find(user => user.email === userEmail);
                 
                 if (foundUser) {
+                    // 4. Rellenar todos los campos:
+                    // Se usan las claves del objeto de usuario: name, lastname, phone, adress.
                     if (nombreInput) nombreInput.value = foundUser.name || '';
                     if (apellidoInput) apellidoInput.value = foundUser.lastname || ''; 
                     if (telefonoInput) telefonoInput.value = foundUser.phone || ''; 
@@ -448,14 +497,17 @@ window.autofillUserData = function() {
                     console.log("Perfil autocompletado con éxito desde demoUsers.", foundUser);
                 } else {
                     console.warn(`Usuario ${userEmail} logueado, pero no encontrado en el array 'demoUsers'.`);
-                }               
+                }
+                
             } catch (e) {
                 console.error("Error al parsear el array 'demoUsers' de localStorage:", e);
             }
         } else {
              console.log("La clave 'demoUsers' no se encontró. No se puede autocompletar el perfil.");
-        }        
+        }
+        
     } else {
+        // Si no hay sesión iniciada, el campo email es editable
         if (emailInput) emailInput.readOnly = false;
     }
 };
@@ -466,6 +518,7 @@ function autofillFromEmail(email, nombreInput, apellidoInput) {
     try {
         const parts = email.split('@')[0].split('.');
         if (parts.length >= 2) {
+            // Capitalizar la primera letra del nombre y apellido
             const firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
             const lastName = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
             
@@ -473,16 +526,18 @@ function autofillFromEmail(email, nombreInput, apellidoInput) {
             apellidoInput.value = lastName;
         }
     } catch (e) {
+        // En caso de emails extraños, se ignora
     }
 }
 
-//Obtener información cliente y almacenar información compra.
 window.handlePurchase = function() {
-    clearMessage(); 
+    clearMessage(); // Limpia mensajes anteriores al iniciar la compra
     
     const items = cargarCarrito();
+    // Reusa el mensajeDiv para mostrar los errores, ya no lo definimos al inicio.
     const mensajeDiv = document.getElementById('mensaje-compra'); 
 
+    // 1. Recolectar datos del formulario
     const customerData = {
         nombre: document.getElementById('nombre').value.trim(),
         apellido: document.getElementById('apellido').value.trim(),
@@ -491,11 +546,17 @@ window.handlePurchase = function() {
         direccion: document.getElementById('direccion').value.trim(),
     };
 
+    // ------------------------------------
+    // 2. VALIDACIONES DE DATOS (Usando showMessage en lugar de alert)
+    // ------------------------------------
+    
+    // Validar Carrito
     if (items.length === 0) {
         showMessage("Error: No hay productos en el carrito para comprar. Por favor, agregue artículos.");
         return;
     }
-    //Validar campos
+    
+    // Validar Campos Requeridos
     if (!customerData.nombre || !customerData.apellido || !customerData.telefono || !customerData.direccion || !customerData.email) {
         showMessage("Por favor, completa todos los campos.");
         return;
@@ -512,21 +573,28 @@ window.handlePurchase = function() {
         showMessage("El campo Apellido solo debe contener letras, espacios y tildes.");
         return;
     }    
-    
+    // Validar Teléfono (Ejemplo: al menos 7 dígitos y solo números)
     const phoneRegex = /^\d{10}$/;
     if (!customerData.telefono || !phoneRegex.test(customerData.telefono)) {
         showMessage("Por favor, ingresa un número de teléfono válido (solo números, de 10 dígitos).");
         return;
     }
-
+    
+    // Validar Email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!customerData.email || !emailRegex.test(customerData.email)) {
         showMessage("Por favor, ingresa una dirección de email válida.");
         return;
     }
     
+    // ------------------------------------
+    // 3. CONTINUAR CON LA COMPRA 
+    // ------------------------------------
+    
     const totalElement = document.getElementById('resumen-total');
     const total = totalElement ? totalElement.textContent : 'N/A';
+
+    // ... (El resto de la lógica de creación de newOrder, guardado, y actualización de stock) ...
     
     const newOrder = {
         id: Date.now(), 
@@ -548,6 +616,8 @@ window.handlePurchase = function() {
     const itemsBeforeEmptying = items; 
     vaciarCarrito();
     updateProductStock(itemsBeforeEmptying); 
+
+    // 4. Mostrar mensaje de éxito (Usando showMessage de tipo 'success')
     document.getElementById('checkout-form').reset();
     
     const successMessage = `
@@ -563,33 +633,47 @@ window.handlePurchase = function() {
     window.renderCheckoutSummary();
 };
 
-//Actualizar stock después de compra.
 function updateProductStock(purchasedItems) {
+    // 1. Obtener la versión actual y editable del inventario
+    // Usamos getProducts() para obtener la lista del localStorage
     let currentInventory = getProducts(); 
+    
+    // Si getProducts devuelve INVENTARIO_INICIAL, necesitamos una copia editable.
+    // Usamos .slice() para asegurarnos de que no modificamos el INVENTARIO_INICIAL
+    // si estamos usando esa variable como fallback.
+    
+    // 2. Iterar sobre los artículos comprados
     purchasedItems.forEach(item => {
+        // Aseguramos que el ID es un número para una búsqueda fiable
         const itemId = Number(item.id); 
         const purchasedQuantity = item.quantity;
         
+        // 3. Encontrar el producto correspondiente en el inventario
         const productIndex = currentInventory.findIndex(p => Number(p.id) === itemId);
         
         if (productIndex !== -1) {
             const product = currentInventory[productIndex];
             
+            // Validación de seguridad (debería ser innecesaria si ya se validó en el carrito)
             if (product.stock >= purchasedQuantity) {
+                // 4. Reducir el stock
                 product.stock -= purchasedQuantity;
                 console.log(`Stock actualizado para ID ${itemId}: Nuevo stock = ${product.stock}`);
             } else {
+                // Esto es un error grave en la lógica si ocurre en el checkout
                 console.error(`¡Error de stock! Se intentó comprar ${purchasedQuantity} unidades, pero solo quedan ${product.stock}. No se pudo actualizar el stock.`);
             }
         } else {
             console.warn(`Producto con ID ${itemId} comprado no fue encontrado en el inventario.`);
         }
     });
+
+    // 5. Guardar el inventario actualizado de nuevo en localStorage
+    // Necesitamos la clave INVENTORY_STORAGE_KEY y JSON.stringify
     localStorage.setItem(INVENTORY_STORAGE_KEY, JSON.stringify(currentInventory));
     console.log("Inventario guardado después de la compra.");
 }
 
-//Mostrar mensaje de error o exito en checkout.
 function showMessage(message, type = 'error') {
     const mensajeDiv = document.getElementById('mensaje-compra');
     if (!mensajeDiv) return;
@@ -605,6 +689,9 @@ function showMessage(message, type = 'error') {
     mensajeDiv.innerHTML = `<p>${message}</p>`;
 }
 
+/**
+ * Limpia y oculta el div de mensajes.
+ */
 function clearMessage() {
     const mensajeDiv = document.getElementById('mensaje-compra');
     if (!mensajeDiv) return;
@@ -612,8 +699,8 @@ function clearMessage() {
     mensajeDiv.innerHTML = '';
 }
 
-//Mostrar historial de compras en el perfil
 window.renderOrderHistory = function() {
+    // Definición global para que sea accesible desde perfil.js
     const orders = loadOrders();
     const historyContainer = document.getElementById('purchase-history');
     const userEmail = localStorage.getItem(localStorageSessionKey);
@@ -633,6 +720,7 @@ window.renderOrderHistory = function() {
         return;
     }
 
+    // Filtrar órdenes por usuario loggeado
     const userOrders = orders.filter(order => order.cliente && order.cliente.email === userEmail);
     
     if (userOrders.length === 0) {
@@ -640,9 +728,11 @@ window.renderOrderHistory = function() {
         return;
     }
 
+    // Ordenar por fecha (más reciente primero)
     userOrders.sort((a, b) => b.id - a.id);
 
     let html = userOrders.map(order => {
+        // Detalle de productos
         const productList = order.productos.map(p => `
             <li class="flex justify-between text-sm text-gray-700 ml-4">
                 <span>${p.name} (x${p.quantity})</span>
@@ -673,7 +763,6 @@ window.renderOrderHistory = function() {
     historyContainer.innerHTML = html;
 };
 
-//Orden de funciones a ejecutar apenas se cargue la página.
 document.addEventListener('DOMContentLoaded', () => {
     updateAuthUI();
     initializeInventory();
@@ -684,4 +773,3 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutHeaderBtn.addEventListener('click', cerrarSesion);
     }
 });
-
